@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+ 
+import glob
+import os
+ 
+path = '/danl/Harmon_dynCon/'
+ 
+restFiles = glob.glob('%s/[701-728]/Rest/Rest?.nii'%(path))
+ 
+for file in restFiles:  
+    print file
+    os.system("fslnvols %s"%(file))
+ 
+ 
+ 
+    
