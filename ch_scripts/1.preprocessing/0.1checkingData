@@ -5,7 +5,7 @@ import os
  
 path = '/danl/Harmon_dynCon/'
  
-restFiles = glob.glob('%s/[701-728]/Rest/Rest?.nii'%(path))
+restFiles = glob.glob('%s/7*/Rest/Rest?.nii'%(path))
  
 for file in restFiles:  
     print file
