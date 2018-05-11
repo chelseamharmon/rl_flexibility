@@ -1,0 +1,74 @@
+---
+title: "Reinforcement Learning Dynamic Flexibility in Adolescence"
+author: "Chelsea Harmon, Raphael Gerraty, Juliet Davidow, Karin Foerde, Adriana Galvan, Daphna Shohamy"
+date: "May 10, 2018"
+output: pdf_document
+#csl: apa.xml
+bibliography: ["DynamicConnectivity.bib"]
+---
+
+```{r load_packages, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(papaja)
+```
+# AsPredicted Preregistration (OSF Project: Dynamic Flexibility in Adolescence)
+
+# What's the main question being asked or hypothesis being tested in this study? (optional)
+
+
+
+## 1. Does greater striatal-cortical dynamic flexibility explain enhanced reinforcement learning performance in adolescents.
+
+The working proposed mechanism for information integration during reinforcement learning is dynamic changes in network communication between the striatum and distributed brain networks. Adult data demonstrates greater dynamic flexibility of striatal-cortical circuits is involved in participants' learning rate over time [@Gerraty2016]. In the same task, an adolescent sample demonstrates greater behavioral reinforcement learning compared to adults. Using methods described in [@Gerraty2016], this study aims to identify if these behavioral benefits in reinforcement learning in the adolescents are explained by greater network flexibility of the striatal-cortical circuitry. We predict that greater network flexibility of striatal-cortical circuitry will positively correlate with better behavioral reinforcement learning in an adolescent sample. 
+
+## 2. What is the role of dynamic flexibility of the hippocampus in greater learning performance 
+
+Reinforcement learning behavioral benefits during adolescence are related to functional connectivity between the hippocampus and the striatum at the time of reinforcement [@Davidow2016]. Given the important role of the hippocampus, the second aim of this study is to measure dynamic flexibility of the hippocampus and the whole-brain to identify if dynamic changes in network communication with the hippocampus help explain neural information integration and the coinciding behavioral benefits in the adolescent sample. We expect that greater dynamic flexibility of the hippocampus will predict learning over time in addition to group differences in reinforcement learning rate.   
+
+
+# Describe the key dependent variable(s) specifying how they will be measured. (optional)
+ 
+The key dependent variables in this study are 1. overall performance measured by learning accuracy (percent optimal choice) and 2. estimated learning rate from the reinforcement learning model. 
+
+
+# How many and which conditions will participants be assigned to? (optional)
+None
+
+
+# Specify exactly which analyses you will conduct to examine the main question/hypothesis. (optional)
+
+### Behavioral Analysis 
+Performance: Overall performance will be measured by learning accuracy. During each learning phase (4 blocks) a percent correct score will be computed based on optimal choice, regardless of feedback. 
+
+Learning Rate: Based on feedback recieved and whether the subject made the optimal choice on a trial-by-trial basis we will characterize learning rate using subjects' decisions (choice behavior) using a reinforcement learning model (Daw, 2011; Sutton and Barto 1998). Briefly, this model will evaluate expected value for a given choice at time (t) based on updating of reinforcement outcome via prediction error. With two additional free parameters: 1. alpha - updating, the extent to which value is updated by feedback from a signal trial, and 2. beta - the inverse temperature, the probability of making a particular choice using a softmax function (Daw, 2011; Ishi et al., 2002). 
+
+### fMRI Analysis
+
+Given how dynamic the brain is in integrating and updating information from the environment, this analysis aims to use a multilayer approach to characterize network modularity and community strucuture over time (Jutla et al., 2011; Mucha et al., 2010). To assess dynamic connectivity between (regions of interest) ROIs (110 subcortical and cortical brain regions) and two a priori seeds, striatum and hippocampus, time course data will be subdivided into 8 time windows of 25 TRs each (per block). Flexibility measures, the extent to which a region changes its community allegiance over time (Bassett et al., 2011), will be computed for each learning block. Flexibility of a priori regions will be compared to a generalized flexiblity score assessed across the whole-brain for each subject. 
+
+The examine the effects of flexibility on learning from feedback, we will estimate a generalized mixed-effects model predicting optimally correct choices with flexilbity estimates for each block with a logistic link function, using Maximum Likelihood (ML) approximation implemented in the lme4 package (Bates et al., 2015). We will include a random effect of subject, allowing for different effects of flexibility on learning for each subject, while contraining these effects with the group average. Average flexibility across sessions will also be included as a fixed effect in the model. 
+
+
+# Any secondary analyses? (optional)
+
+To explore the relationship between network dynamics and the important role of the hippocampus in learning and memory systems, we will also regress flexibility statistics against subsequent memory scores for the trial-unique objects presented during feedback. Previous reports find no association between memory and the striatal ROI, however given the role of the hippocampus in memory, we will conduct an exploratory analysis to examine the role of network flexibilty of the hippocampus in episodic memory. 
+
+
+
+# How many observations will be collected or what will determine sample size? No need to justify decision, but be precise about exactly how the number will be determined. (optional)
+ 
+The sample will include usable data from 22 adults, 24-30 years old, (total 31 collected) and 25 adolescents, 13-17 years old, (total 41 collected). These numbers are based on the data quality and how many individuals were already collected in the experiment. 
+
+
+# Anything else you would like to pre-register? (e.g., data exclusions, variables collected for exploratory purposes, unusual analyses planned?) (optional)
+
+1. Prediction Error results 
+
+2. Learning without reinforcement 
+
+3. Resting state data 
+
+
+#FLUX Abstract 
+1600 characters including spaces - 
+1500 characters for travel awards - 
