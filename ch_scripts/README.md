@@ -4,6 +4,22 @@
 
 Descriptions and example scripts for running network preprocessing and analysis functions contained in this repository. See paper for details when it comes out.
 
+### Preprocessing 
+Prepare folder structure. Run fsl_anat to prepare anatomical scans. Run initial preprocessing of resting state data. 
+
+```.bash
+#lux
+./1.preprocessing/0.1preprepFolderStructure.sh
+
+```
+```.bash
+#habanero
+for n in 7* ; do sbatch fslAnat.sh $n ; done 
+
+for n in 7* ; do sbatch restFeat.sh $n ; done
+
+```
+
 
 
 ### Extended Preprocessing
