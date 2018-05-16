@@ -10,9 +10,10 @@ Descriptions and example scripts for running network preprocessing and analysis 
 Because of the known effect of motion on measures of connectivity, we followed up standard preprocessing in FSL with an extended nuisance regression. Affine transformation parameters from motion correction, CSF, white matter, and whole-brain signals are regressed against preprocessed 4D data, along with the squares, derivatives, and squared derivatives of these confounds. See Satterthwaite et al 2013 for details. Bash code:
 
 ```.bash
-./1.0extract_confts
+./1.preprocessing/1.0extract_confts
 
   #run 1st level confound regression, using template .fsf and confound files
+  #check these .fsf files and update them
   ~/GitHub/rl_flexibility/1st_level_conf.sh $i $subdir/36par+spikes.txt
 done
 ```
