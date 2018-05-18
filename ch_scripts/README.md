@@ -9,11 +9,13 @@ Prepare folder structure. Run fsl_anat to prepare anatomical scans. Run initial 
 
 ```.bash
 #lux
-./1.preprocessing/0.1preprepFolderStructure.sh
+/danl/Harmon_dynCon/scripts/0.set_up_scripts
+./0.1preprepFolderStructure.sh
 
 ```
 ```.bash
 #habanero
+/rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing
 for n in 7* ; do sbatch fslAnat.sh $n ; done 
 
 for n in 7* ; do sbatch restFeat.sh $n ; done
@@ -27,7 +29,8 @@ Because of the known effect of motion on measures of connectivity, we followed u
 
 ```.bash
 #do this on lux 
-./1.preprocessing/1.0extract_confts
+/danl/Harmon_dynCon/scripts/1.preprocessing
+./1.0extract_confts
 
 #do this on habanero
 for i in /rigel/psych/users/cmh2228/dynCon/701/Learn*/filtered_func_data.nii.gz; 
