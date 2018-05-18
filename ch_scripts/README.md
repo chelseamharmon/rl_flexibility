@@ -1,6 +1,6 @@
 # Network Flexibility and Reinforcement Learning
 ## Chelsea Harmon, 2018 
-### adopted from : Raphael Gerraty, 2015-2016
+### adapted from : Raphael Gerraty, 2015-2016
 
 Descriptions and example scripts for running network preprocessing and analysis functions contained in this repository. See paper for details when it comes out.
 
