@@ -26,12 +26,17 @@ for n in 7* ; do sbatch restFeat.sh $n ; done
 Because of the known effect of motion on measures of connectivity, we followed up standard preprocessing in FSL with an extended nuisance regression. Affine transformation parameters from motion correction, CSF, white matter, and whole-brain signals are regressed against preprocessed 4D data, along with the squares, derivatives, and squared derivatives of these confounds. See Satterthwaite et al 2013 for details. Bash code:
 
 ```.bash
+#do this on lux 
 ./1.preprocessing/1.0extract_confts
 
-  #run 1st level confound regression, using template .fsf and confound files
-  #check these .fsf files and update them
-  ~/GitHub/rl_flexibility/1st_level_conf.sh $i $subdir/36par+spikes.txt
+#do this on habanero
+for i in /rigel/psych/users/cmh2228/dynCon/701/Learn*/filtered_func_data.nii.gz; 
+do 
+subdir=$(dirname $i); 
+sbatch --export=arg1=$i,arg2=$subdir/36par+spikes.txt,arg3=/rigel/psych/users/cmh2228/dynCon/rl_flexbility/conf_reg_design.fsf,arg4=/rigel/psych/app/fsl/data /rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing/1st_level_conf.sub.sh; 
 done
+
+
 ```
 
 
