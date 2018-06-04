@@ -4,6 +4,19 @@
 
 Descriptions and example scripts for running network preprocessing and analysis functions contained in this repository. See paper for details when it comes out.
 
+### Syncing data 
+
+
+```.bash
+#From original location to server 
+rsync -avz -O --omit-dir-times --no-perms  --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/mprage.nii" --include="7*/Rest?.nii" --include="7*/Learn?_PEpriorD.feat/filtered_func_data.nii.gz" --include="7*/Learn?_PEpriorD.feat/reg" --include="7*/Learn?_PEpriorD.feat/mc" --include="7*/Learn?_PEpriorD.feat/mc/*" --include="7*/Learn?_PEpriorD.feat/reg/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" rgerraty@lovelace.psych.columbia.edu:/data/engine/juliet/adoles/ /danl/Harmon_dynCon/
+
+#From server to Habanero 
+rsync -avz -O --omit-dir-times --no-perms  --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/Learn?_PEpriorD.feat/*" --include="7*/Learn?_PEpriorD.feat/reg" --include="7*/Learn?_PEpriorD.feat/mc" --include="7*/Learn?_PEpriorD.feat/mc/*" --include="7*/Learn?_PEpriorD.feat/reg/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" charmon@lux.psych.columbia.edu:/danl/Harmon_dynCon/ /rigel/psych/users/cmh2228/dynCon/
+```
+
+
+
 ### Preprocessing 
 Prepare folder structure. Run fsl_anat to prepare anatomical scans. Run initial preprocessing of resting state data. 
 
@@ -42,7 +55,15 @@ done
 ```
 
 
+### Syncing data 
 
+
+```.bash
+#Moving newly created extended preprocesses folders (36par+spikes.feat) to lux 
+
+
+
+```
 
 ### Running nonlinear registration with FNIRT
 After nuisance regression has been run, the residual timeseries needs to be transformed into standard space (in this case, MNI). Make sure fsl\_anat has been run on each structural image first. The following bash code was used to perform these transformations:
