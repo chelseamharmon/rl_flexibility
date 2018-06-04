@@ -33,12 +33,11 @@ Because of the known effect of motion on measures of connectivity, we followed u
 ./1.0extract_confts
 
 #do this on habanero
-for i in /rigel/psych/users/cmh2228/dynCon/701/Learn*/filtered_func_data.nii.gz; 
+for i in /rigel/psych/users/cmh2228/dynCon/7*/Learn*/filtered_func_data.nii.gz; 
 do 
 subdir=$(dirname $i); 
-sbatch --export=arg1=$i,arg2=$subdir/36par+spikes.txt,arg3=/rigel/psych/users/cmh2228/dynCon/rl_flexbility/conf_reg_design.fsf,arg4=/rigel/psych/app/fsl/data /rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing/1st_level_conf.sub.sh; 
+sbatch --export=arg1=$i,arg2=$subdir/36par+spikes.txt,arg3=/rigel/psych/users/cmh2228/dynCon/rl_flexibility/conf_reg_design.fsf,arg4=/rigel/psych/app/fsl/data,arg5=$subdir/conf_reg_design.fsf /rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing/1st_level_conf.sub.sh; 
 done
-
 
 ```
 
