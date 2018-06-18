@@ -70,22 +70,11 @@ After nuisance regression has been run, the residual timeseries needs to be tran
 
 ```.bash
 #fnirt has already been run, just applying transformation
-for i in /data/engine/rgerraty/learn_dyncon/4*/Learn*; 
-    do 
-    #run linear registration on example functional image
-    flirt -ref $i/../structural/mprage.anat/T1_biascorr_brain.nii.gz\
-     -in $i/reg/example_func.nii.gz\
-     -omat $i/reg/example_func2highres.mat;
 
-     echo warping $i;
-
-    #apply warp from FNIRT to preprocessed 4D data
-    applywarp --ref=$FSLDIR/data/standard/MNI152_T1_2mm.nii.gz\
-      --in=$i/36par+spikes.feat/stats/res4d.nii.gz\
-      --out=$i/36par+spikes.feat/stats/res4d_std.nii.gz\
-      --warp=$i/../structural/mprage.anat/T1_to_MNI_nonlin_field.nii.gz\
-      --premat=$i/reg/example_func2highres.mat;  
+for i in /rigel/psych/users/cmh2228/dynCon/7*/Learn?_PEpriorD.feat;
+do sbatch --export=arg1=$i,arg2=/rigel/psych/app/fsl/data /rigel/psych/users/cmh2228/dynCon/scripts/non_lin_reg_sub.sh; 
 done
+
 ```
 
 
