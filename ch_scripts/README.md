@@ -40,6 +40,7 @@ for n in 7* ; do sbatch restFeat.sh $n ; done
 ### Extended Preprocessing
 Because of the known effect of motion on measures of connectivity, we followed up standard preprocessing in FSL with an extended nuisance regression. Affine transformation parameters from motion correction, CSF, white matter, and whole-brain signals are regressed against preprocessed 4D data, along with the squares, derivatives, and squared derivatives of these confounds. See Satterthwaite et al 2013 for details. Bash code:
 
+For Task 
 ```.bash
 #do this on lux 
 /danl/Harmon_dynCon/scripts/1.preprocessing
@@ -52,6 +53,25 @@ subdir=$(dirname $i);
 sbatch --export=arg1=$i,arg2=$subdir/36par+spikes.txt,arg3=/rigel/psych/users/cmh2228/dynCon/rl_flexibility/conf_reg_design.fsf,arg4=/rigel/psych/app/fsl/data,arg5=$subdir/conf_reg_design.fsf /rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing/1st_level_conf.sub.sh; 
 done
 
+```
+
+For Rest 
+```.bash
+
+rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
+
+#must register data before doing: 
+
+#do this on lux 
+/danl/Harmon_dynCon/scripts/1.preprocessing
+./1.0extract_confts_rest
+
+#do this on habanero
+for i in /rigel/psych/users/cmh2228/dynCon/7*/Rest/Rest?.feat/filtered_func_data.nii.gz; 
+do 
+subdir=$(dirname $i); 
+sbatch --export=arg1=$i,arg2=$subdir/36par+spikes.txt,arg3=/rigel/psych/users/cmh2228/dynCon/rl_flexibility/conf_reg_design.fsf,arg4=/rigel/psych/app/fsl/data,arg5=$subdir/conf_reg_design.fsf /rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing/1st_level_conf.sub.sh; 
+done
 ```
 
 
@@ -91,7 +111,7 @@ Once the preprocessed images have been registered, we extract mean timecourses f
 for i in /danl/Harmon_dynCon/7*/Learn?_PEprior.feat/36par+spikes.feat/; 
     do 
     #extract timeseries (mean or 1st eigenvector, see function) data from each ROI in ~/Harvard-Oxford_ROIs/ 
-    /danl/Harmon_dynCon/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz /danl/Harmon_dynCon/Harvard-Oxford_ROIs/ $i/H-O_rois/;
+    ~/Github/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz /danl/Harmon_dynCon/Harvard-Oxford_ROIs/ $i/H-O_rois/;
 done
 ```
 
