@@ -86,7 +86,7 @@ rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Learn?_PE
 Once the preprocessed images have been registered, we extract mean timecourses for each Harvard-Oxford ROI, using the function extract_ROIs.sh. The output of this function is a timecourse for each ROI in the specified input folder, as well as a .txt file containing all of the ROIs. The bash code used to run this function on each learning block for each subject is below:
 
 ```.bash
-rsync --dry-run -avz --include="Harvard-Oxford_ROIs*" --include="Harvard-Oxford_ROIs/*.nii.gz“ --exclude="*" --exclude="*/*" rgerraty@lovelace.psych.columbia.edu:/data/engine/juliet/adoles/ /danl/Harmon_dynCon/
+#scp Harvard-Oxford_ROIs folder from rgerraty
 
 for i in /danl/Harmon_dynCon/7*/Learn?_PEprior.feat/36par+spikes.feat/; 
     do 
