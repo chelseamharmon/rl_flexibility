@@ -55,16 +55,6 @@ done
 ```
 
 
-### Syncing data 
-
-
-```.bash
-#Moving newly created extended preprocesses folders (36par+spikes.feat) to lux 
-
-
-
-```
-
 ### Running nonlinear registration with FNIRT
 After nuisance regression has been run, the residual timeseries needs to be transformed into standard space (in this case, MNI). Make sure fsl\_anat has been run on each structural image first. The following bash code was used to perform these transformations:
 
@@ -78,15 +68,30 @@ done
 ```
 
 
+### Syncing data 
+
+
+```.bash
+#Moving newly created extended preprocesses folders (36par+spikes.feat) to lux 
+
+rsync --dry-run -avz --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats/*" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" --exclude="*/*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
+
+rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats/*" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" --exclude="*/*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
+
+
+```
+
 
 ### Extracting time courses
 Once the preprocessed images have been registered, we extract mean timecourses for each Harvard-Oxford ROI, using the function extract_ROIs.sh. The output of this function is a timecourse for each ROI in the specified input folder, as well as a .txt file containing all of the ROIs. The bash code used to run this function on each learning block for each subject is below:
 
 ```.bash
-for i in /data/engine/rgerraty/learn_dyncon/4*/Learn?_PEprior.feat/36par+spikes.feat/; 
+rsync --dry-run -avz --include="Harvard-Oxford_ROIs*" --include="Harvard-Oxford_ROIs/*.nii.gz“ --exclude="*" --exclude="*/*" rgerraty@lovelace.psych.columbia.edu:/data/engine/juliet/adoles/ /danl/Harmon_dynCon/
+
+for i in /danl/Harmon_dynCon/7*/Learn?_PEprior.feat/36par+spikes.feat/; 
     do 
     #extract timeseries (mean or 1st eigenvector, see function) data from each ROI in ~/Harvard-Oxford_ROIs/ 
-    ~/GitHub/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz ~/Harvard-Oxford_ROIs/ $i/H-O_rois/;
+    /danl/Harmon_dynCon/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz /danl/Harmon_dynCon/Harvard-Oxford_ROIs/ $i/H-O_rois/;
 done
 ```
 
