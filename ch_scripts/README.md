@@ -28,13 +28,19 @@ Prepare folder structure. Run fsl_anat to prepare anatomical scans. Run initial 
 ```
 ```.bash
 #habanero
-/rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing
+/rigel/psych/users/cmh2228/dynCon/scripts/
 for n in 7* ; do sbatch fslAnat.sh $n ; done 
 
 for n in 7* ; do sbatch restFeat.sh $n ; done
 
 ```
 
+```.bash
+#lux
+/danl/Harmon_dynCon/scripts/1.preprocessing
+./restReg.sh
+
+```
 
 
 ### Extended Preprocessing
@@ -52,7 +58,6 @@ do
 subdir=$(dirname $i); 
 sbatch --export=arg1=$i,arg2=$subdir/36par+spikes.txt,arg3=/rigel/psych/users/cmh2228/dynCon/rl_flexibility/conf_reg_design.fsf,arg4=/rigel/psych/app/fsl/data,arg5=$subdir/conf_reg_design.fsf /rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing/1st_level_conf.sub.sh; 
 done
-
 ```
 
 For Rest 
@@ -67,11 +72,14 @@ rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --i
 ./1.0extract_confts_rest
 
 #do this on habanero
+rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" charmon@lux.psych.columbia.edu:/danl/Harmon_dynCon/ /rigel/psych/users/cmh2228/dynCon/
+
 for i in /rigel/psych/users/cmh2228/dynCon/7*/Rest/Rest?.feat/filtered_func_data.nii.gz; 
 do 
 subdir=$(dirname $i); 
 sbatch --export=arg1=$i,arg2=$subdir/36par+spikes.txt,arg3=/rigel/psych/users/cmh2228/dynCon/rl_flexibility/conf_reg_design.fsf,arg4=/rigel/psych/app/fsl/data,arg5=$subdir/conf_reg_design.fsf /rigel/psych/users/cmh2228/dynCon/scripts/1.preprocessing/1st_level_conf.sub.sh; 
 done
+
 ```
 
 
@@ -122,9 +130,15 @@ Connectivity between pairs of ROIs was measured by average magnitude squared coh
 
 
 ```.matlab
+screen -r 
+matlab -nosplash -nojvm 
+%Alternatively(and slower) matlab -nosplash -nodesktop
+
 addpath ~/GitHub/rl_flexibility
 %read in all subject/run ROI timeseries directories 
-[a,b]=system('ls -d /data/engine/rgerraty/learn_dyncon/4*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois');
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois');
+%do separately above section followed by next section 
+
 c=strread(b,'%s');
 
 for i=1:size(c,1)
@@ -136,6 +150,7 @@ for i=1:size(c,1)
     save(char(strcat(c(i),'/conn_cells')),'conn_cell')
 
 end
+
 ```
 
 
