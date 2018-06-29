@@ -72,7 +72,10 @@ rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --i
 ./1.0extract_confts_rest
 
 #do this on habanero
-rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" charmon@lux.psych.columbia.edu:/danl/Harmon_dynCon/ /rigel/psych/users/cmh2228/dynCon/
+rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/logs/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/mc/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/reg" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/reg/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" charmon@lux.psych.columbia.edu:/danl/Harmon_dynCon/ /rigel/psych/users/cmh2228/dynCon/
+
+rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/*" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/reg" --include="7*/Rest/Rest?.feat/reg/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" charmon@lux.psych.columbia.edu:/danl/Harmon_dynCon/ /rigel/psych/users/cmh2228/dynCon/
+
 
 for i in /rigel/psych/users/cmh2228/dynCon/7*/Rest/Rest?.feat/filtered_func_data.nii.gz; 
 do 
@@ -86,6 +89,7 @@ done
 ### Running nonlinear registration with FNIRT
 After nuisance regression has been run, the residual timeseries needs to be transformed into standard space (in this case, MNI). Make sure fsl\_anat has been run on each structural image first. The following bash code was used to perform these transformations:
 
+for Task
 ```.bash
 #fnirt has already been run, just applying transformation
 
@@ -95,6 +99,14 @@ done
 
 ```
 
+for Rest
+```.bash
+#fnirt has already been run, just applying transformation
+
+for i in /rigel/psych/users/cmh2228/dynCon/7*/Rest/Rest?.feat;
+do sbatch --export=arg1=$i,arg2=/rigel/psych/app/fsl/data /rigel/psych/users/cmh2228/dynCon/scripts/non_lin_reg_sub.sh; 
+done
+```
 
 ### Syncing data 
 
