@@ -118,6 +118,7 @@ rsync --dry-run -avz --include="7*" --include="7*/Learn?_PEpriorD.feat" --includ
 
 rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats/*" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" --exclude="*/*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
 
+rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/36*.feat" --include="7*/Rest/Rest?.feat/36*.feat/*" --include="7*/Rest/Rest?.feat/36*.feat/stats" --include="7*/Rest/Rest?.feat/36*.feat/logs/" --include="7*/Rest/Rest?.feat/36*.feat/stats/*" --include="7*/Rest/Rest?.feat/36*.feat/logs/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" --exclude="*/*/*/*/*" --exclude="*/*/*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
 
 ```
 
@@ -133,7 +134,17 @@ for i in /danl/Harmon_dynCon/7*/Learn?_PEprior.feat/36par+spikes.feat/;
     #extract timeseries (mean or 1st eigenvector, see function) data from each ROI in ~/Harvard-Oxford_ROIs/ 
     ~/Github/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz /danl/Harmon_dynCon/Harvard-Oxford_ROIs/ $i/H-O_rois/;
 done
+
 ```
+
+for Rest 
+
+```.bash
+
+nohup ./extract_time_course_rest.sh &
+
+```
+
 
 
 
