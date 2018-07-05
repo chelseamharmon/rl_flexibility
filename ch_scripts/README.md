@@ -114,10 +114,13 @@ done
 ```.bash
 #Moving newly created extended preprocesses folders (36par+spikes.feat) to lux 
 
+#Practice - dry run displays the files that will be copied 
 rsync --dry-run -avz --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats/*" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" --exclude="*/*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
 
+#Task
 rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/" --include="7*/Learn?_PEpriorD.feat/36*.feat/stats/*" --include="7*/Learn?_PEpriorD.feat/36*.feat/logs/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" --exclude="*/*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
 
+#Rest 
 rsync -avz -O --omit-dir-times --no-perms --include="7*" --include="7*/Rest" --include="7*/Rest/Rest?.feat" --include="7*/Rest/Rest?.feat/36*.feat" --include="7*/Rest/Rest?.feat/36*.feat/*" --include="7*/Rest/Rest?.feat/36*.feat/stats" --include="7*/Rest/Rest?.feat/36*.feat/logs/" --include="7*/Rest/Rest?.feat/36*.feat/stats/*" --include="7*/Rest/Rest?.feat/36*.feat/logs/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" --exclude="*/*/*/*" --exclude="*/*/*/*/*" --exclude="*/*/*/*/*/*" cmh2228@habanero.rcs.columbia.edu:/rigel/psych/users/cmh2228/dynCon/ /danl/Harmon_dynCon/ 
 
 ```
@@ -135,6 +138,7 @@ for i in /danl/Harmon_dynCon/7*/Learn?_PEprior.feat/36par+spikes.feat/;
     ~/Github/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz /danl/Harmon_dynCon/Harvard-Oxford_ROIs/ $i/H-O_rois/;
 done
 
+#Also can be run by running script ./extract_time_course.sh
 ```
 
 for Rest 
@@ -151,7 +155,7 @@ nohup ./extract_time_course_rest.sh &
 ### Calculate coherence matrices for each time window
 Connectivity between pairs of ROIs was measured by average magnitude squared coherence in the .06-.12 Hz band, computed in MATLAB. The code below calls a function for creating a coherence matrices in a specified frequency range for specified time windows (in this case 25 TRs, or 50 s). These are saved as a .mat file for multi-slice community detection. 
 
-
+for Task 
 ```.matlab
 screen -r 
 matlab -nosplash -nojvm 
@@ -160,6 +164,31 @@ matlab -nosplash -nojvm
 addpath ~/GitHub/rl_flexibility
 %read in all subject/run ROI timeseries directories 
 [a,b]=system('ls -d /danl/Harmon_dynCon/7*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois');
+%do separately above section followed by next section 
+
+c=strread(b,'%s');
+
+for i=1:size(c,1)
+
+    %calculate coherence per time window from concatenated ROI file
+    filename=char(strcat(c(i),'/all_rois.txt'))
+    %need to specify filename, window length in TR, sampling rate, bandpass 
+    conn_cell=coherence_by_block(filename,25,.5,.06,.12);
+    save(char(strcat(c(i),'/conn_cells')),'conn_cell')
+
+end
+
+```
+
+for Rest 
+```.matlab
+screen -r 
+matlab -nosplash -nojvm 
+%Alternatively(and slower) matlab -nosplash -nodesktop
+
+addpath ~/GitHub/rl_flexibility
+%read in all subject/run ROI timeseries directories 
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois');
 %do separately above section followed by next section 
 
 c=strread(b,'%s');
