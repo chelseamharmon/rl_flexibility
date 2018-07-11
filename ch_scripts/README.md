@@ -213,14 +213,25 @@ end
 Input coherence matrix for each block. Also need number of blocks,
 resolution and coupling parameters. In Matlab
 
+forTask
 ```.matlab
+#Do separately for 70* 71* and 72* by using: 
+screen 
+control^ a d 
+screen -r 
+matlab -nosplash -nodisplay 
+
+
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
 addpath ~/GitHub/rl_flexibility
-addpath ~/scripts/MATLAB/GenLouvain_for_Raphael/
-addpath ~/scripts/MATLAB/Bassett_Code/
+addpath ~/GitHub/rl_flexibility/GenLouvain/
+addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 %read in data
-[a,b]=system('ls -d /data/engine/rgerraty/learn_dyncon/4*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/72*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
+
+%do the above first then do the below 
+
 c=strread(b,'%s');
 
 %concatenate runs for each subject
@@ -246,6 +257,49 @@ for j=1:size(c,1)/numruns
 end
 ```
 
+forRest
+```.matlab
+#Do separately for 70* 71* and 72* by using: 
+screen 
+control^ a d 
+screen -r 
+matlab -nosplash -nodisplay 
+
+
+%need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
+addpath ~/GitHub/rl_flexibility
+addpath ~/GitHub/rl_flexibility/GenLouvain/
+addpath ~/GitHub/rl_flexibility/Bassett_Code/
+
+%read in data
+[a,b]=system('ls -d /danl/Harmon_dynCon/70*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+
+%do the above first then do the below 
+
+c=strread(b,'%s');
+
+%concatenate runs for each subject
+numruns=4
+k=1;
+for j=1:size(c,1)/numruns
+    c(k)
+    conn_cell_cat=[];
+    for i=1:numruns 
+        load(strcat(char(c(k-1+i)),'/conn_cells'))
+        conn_cell_cat=cat(3,conn_cell_cat,conn_cell)
+    end
+
+    %network_diags code:
+    %runs multi-slice community detection
+    %gives flexibility for each run
+    %also allegiance matrix (not using yet)
+    %need to specify number of blocks, simulations, coupling, resolution
+    [a_mat,flex]=network_diags(conn_cell_cat,4,500,1,1.1813)
+    save(char(strcat(c(k),'/../../a_mat')),'a_mat')
+    save(char(strcat(c(k),'/../../flex')),'flex')
+    k=k+numruns;
+end
+```
 
 
 ### Pull flexibility statistics
