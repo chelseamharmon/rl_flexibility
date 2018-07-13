@@ -225,29 +225,10 @@ for i=1:size(c,1)
     filename=char(strcat(c(i),'/all_rois_incomp.txt'))
     %need to specify filename, window length in TR, sampling rate, bandpass 
     conn_cell=coherence_by_block(filename,25,.5,.06,.12);
-    save(char(strcat(c(i),'/conn_cells_incomp')),'conn_cell')
+    save(char(strcat(c(i),'/conn_cells')),'conn_cell')
 
 end
 
-%do this from a script in matlab in the Learn folder seperately to index properly - to add back NA columns before concatenating
-
-load('conn_cells_incomp.mat')
-for i=1:size(c,1)
-    %conn_cell=load(char(strcat(c(i),'/conn_cells_incomp')))
-    missing=[13 61; 13 61; 61 13; 61 13];
-    for i=1:length(missing)
-        for k=1:size(conn_cell,3)
-            %FOR inserting columns next 
-            len=size(conn_cell{k},2);
-            A = [conn_cell{k}(1:(missing(i)-1),:)]';
-            B = NaN(1,len)';
-            C = [conn_cell{k}(missing(i):end,:)]';
-            conn_cell{k}=[A B C];
-         end
-    end
-end
-
-save('conn_cells', 'conn_cell')
 
 
 
@@ -337,6 +318,7 @@ end
 ```
 
 forRest
+#This needs to be fixed - do we want to concatenate across both runs? RUns needs to be updated 
 ```.matlab
 #Do separately for 70* 71* and 72* by using: 
 screen 
@@ -351,7 +333,7 @@ addpath ~/GitHub/rl_flexibility/GenLouvain/
 addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 %read in data
-[a,b]=system('ls -d /danl/Harmon_dynCon/70*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
 
 %do the above first then do the below 
 
@@ -378,6 +360,29 @@ for j=1:size(c,1)/numruns
     save(char(strcat(c(k),'/../../flex')),'flex')
     k=k+numruns;
 end
+```
+
+To add back in the missing columns/rows for subject 713 before pulling all subj flexibility stats 
+#Should be updated for a_mat.mat & flex.mat 
+```
+%do this from a script in matlab in the Learn folder seperately to index properly - to add back NA columns before concatenating
+
+load('conn_cells_incomp.mat')
+for i=1:size(c,1)
+    missing=[13 61; 13 61; 61 13; 61 13];
+    for i=1:length(missing)
+        for k=1:size(conn_cell,3)
+            %FOR inserting columns next 
+            len=size(conn_cell{k},2);
+            A = [conn_cell{k}(1:(missing(i)-1),:)]';
+            B = NaN(1,len)';
+            C = [conn_cell{k}(missing(i):end,:)]';
+            conn_cell{k}=[A B C];
+         end
+    end
+end
+
+save('conn_cells', 'conn_cell')
 ```
 
 
@@ -435,7 +440,7 @@ end
 dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
 ```
 
-forRest
+forRest #This also was not run based on blocks 
 ```.matlab
 
 %load data and concatenate flexibility statistics
