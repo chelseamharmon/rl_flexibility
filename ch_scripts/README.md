@@ -135,7 +135,7 @@ Once the preprocessed images have been registered, we extract mean timecourses f
 for i in /danl/Harmon_dynCon/7*/Learn?_PEprior.feat/36par+spikes.feat/; 
     do 
     #extract timeseries (mean or 1st eigenvector, see function) data from each ROI in ~/Harvard-Oxford_ROIs/ 
-    ~/Github/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz /danl/Harmon_dynCon/Harvard-Oxford_ROIs/ $i/H-O_rois/;
+    ~/GitHub/rl_flexibility/extract_ROIs.sh $i/stats/res4d_std.nii.gz /danl/Harmon_dynCon/Harvard-Oxford_ROIs/ $i/H-O_rois/;
 done
 
 #Also can be run by running script ./extract_time_course.sh
@@ -180,6 +180,62 @@ end
 
 ```
 
+Subject 713 has 2 missing ROIs (column 13 & 61) - this code removes those columns in the all_rois.txt file before running community detection
+Rerun calculating the coherence matrices having removed these two columns from all 4 Learning blocks for this subject
+After rerunning add columns and rows back in 
+
+```.matlab
+
+addpath ~/GitHub/rl_flexibility
+%read in all subject/run ROI timeseries directories 
+[a,b]=system('ls -d /danl/Harmon_dynCon/713/Learn4_PEpriorD.feat/36par+spikes.feat/H-O_rois');
+%do separately above section followed by next section 
+
+c=strread(b,'%s');
+
+incomp_rois=load(char(strcat(c(4),'/all_rois.txt')))
+[row, col]=find(~incomp_rois) 
+column_missing=unique(col) 
+
+%This is one way to remove missing ROIs for the file that has 0's incomp_rois( :, ~any(incomp_rois,1) ) = []
+%Below is to get rid of all runs for this subject 
+
+[a,b]=system('ls -d /danl/Harmon_dynCon/713/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois');
+
+c=strread(b,'%s');
+for i=1:size(c,1)
+    incomp_rois=load(char(strcat(c(i),'/all_rois.txt')))
+    incomp_rois(:,[13 61]) = []
+    save(char(strcat(c(1),'/all_rois_incomp.txt')),'incomp_rois', '-ascii')
+end 
+
+%read in all subject/run ROI timeseries directories 
+[a,b]=system('ls -d /danl/Harmon_dynCon/713/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois');
+%do separately above section followed by next section 
+
+c=strread(b,'%s');
+
+for i=1:size(c,1)
+
+    %calculate coherence per time window from concatenated ROI file
+    
+    filename=char(strcat(c(i),'/all_rois_incomp.txt'))
+    %need to specify filename, window length in TR, sampling rate, bandpass 
+    conn_cell=coherence_by_block(filename,25,.5,.06,.12);
+    save(char(strcat(c(i),'/conn_cells_incomp')),'conn_cell')
+
+end
+
+
+for i=1:size(c,1)
+       conn_cell=char(strcat(c(i),'/conn_cells_incomp.m'))
+       inPos=[13 26];  % location at which to insert
+       Nz=110;     % number of zeros to insert
+       con_cell=[conn_cell(1:inPos-1) repmat(0,1,N) x(nPos:end];
+```
+
+
+
 for Rest 
 ```.matlab
 screen -r 
@@ -207,11 +263,12 @@ end
 
 
 
-
 ### Run multi-slice community detection and flexibility statistics
 
 Input coherence matrix for each block. Also need number of blocks,
 resolution and coupling parameters. In Matlab
+
+Because Subject 713 has 2 missing ROIs - add them back to conn_cells here 
 
 forTask
 ```.matlab
@@ -229,6 +286,9 @@ addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 %read in data
 [a,b]=system('ls -d /danl/Harmon_dynCon/72*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
+
+[a,b]=system('ls -d /danl/Harmon_dynCon/713/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
+
 
 %do the above first then do the below 
 
@@ -306,10 +366,14 @@ end
 
 For plotting and preparing for heirarchical models. Matlab.
 
+forTask
 ```.matlab
 
 %load data and concatenate flexibility statistics
-[a,b]=system('ls -d /data/engine/rgerraty/learn_dyncon/4*/flex.mat');
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/flex.mat');
+%do separately above and below 
+
+
 c=strread(b,'%s');
 flex_cat=[];
 for j=1:size(c,1)
@@ -318,8 +382,8 @@ for j=1:size(c,1)
 end
 plot(squeeze(mean(flex_cat)))
 
-block=repmat([1:4]',22,1);
-sub=repmat([1:22]',1,4)'
+block=repmat([1:4]',25,1);
+sub=repmat([1:25]',1,4)'
 sub=sub(:);
 
 %reshape whole-brain average flexibility
@@ -328,7 +392,7 @@ meanflex=meanflex(:);
 
 %get striatal average flexibility
 %check to make sure indices are correct
-[trash,roi_names]=system('ls  ~/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
+[trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
 roi_names=strread(roi_names,'%s');
 str_ind=[49,51,54,104,106,109];
 roi_names(str_ind)
@@ -340,7 +404,7 @@ plot(squeeze(mean(flex_cat(str_ind,:,:))))
 
 %write out csv for modeling in R
 flexdata=[sub block meanflex strflex]
-dlmwrite('/data/engine/rgerraty/learn_dyncon/flexdata.csv',flexdata) 
+dlmwrite('/danl/Harmon_dynCon/flexdata.csv',flexdata) 
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -349,7 +413,57 @@ for i=1:size(flex_cat,3)
   flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
 end
 
-dlmwrite('/data/engine/rgerraty/learn_dyncon/flex_allrois.csv',flex_allrois) 
+dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
+```
+
+forRest
+```.matlab
+
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/flex.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+flex_cat=[];
+for j=1:size(c,1)
+    load(char(c(j)))
+    flex_cat=cat(3,flex_cat,flex)
+end
+plot(squeeze(mean(flex_cat)))
+
+block=repmat([1:4]',25,1);
+sub=repmat([1:25]',1,4)'
+sub=sub(:);
+
+%reshape whole-brain average flexibility
+meanflex=squeeze(mean(flex_cat));
+meanflex=meanflex(:);
+
+%get striatal average flexibility
+%check to make sure indices are correct
+[trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
+roi_names=strread(roi_names,'%s');
+str_ind=[49,51,54,104,106,109];
+roi_names(str_ind)
+
+strflex=squeeze(mean(flex_cat(str_ind,:,:)));
+strflex=strflex(:);
+
+plot(squeeze(mean(flex_cat(str_ind,:,:))))
+
+%write out csv for modeling in R
+flexdata=[sub block meanflex strflex]
+dlmwrite('/danl/Harmon_dynCon/flexdataRest.csv',flexdata) 
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+flex_allrois=[];
+for i=1:size(flex_cat,3)
+  flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
+end
+
+dlmwrite('/danl/Harmon_dynCon/flex_allroisRest.csv',flex_allrois) 
 ```
 
 
