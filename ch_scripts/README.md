@@ -198,7 +198,9 @@ incomp_rois=load(char(strcat(c(4),'/all_rois.txt')))
 column_missing=unique(col) 
 
 %This is one way to remove missing ROIs for the file that has 0's incomp_rois( :, ~any(incomp_rois,1) ) = []
-%Below is to get rid of all runs for this subject 
+%Below is to get rid of excluded coher matrices for all runs for this subject 
+
+%Creating new ROI txt files excluding NA columns 
 
 [a,b]=system('ls -d /danl/Harmon_dynCon/713/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois');
 
@@ -209,7 +211,8 @@ for i=1:size(c,1)
     save(char(strcat(c(1),'/all_rois_incomp.txt')),'incomp_rois', '-ascii')
 end 
 
-%read in all subject/run ROI timeseries directories 
+%calculating coherence matrices excluding NA rois 
+
 [a,b]=system('ls -d /danl/Harmon_dynCon/713/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois');
 %do separately above section followed by next section 
 
@@ -226,10 +229,13 @@ for i=1:size(c,1)
 
 end
 
-missing=[13 61; 13 61; 61 13; 61 13];
-for i=1:length(missing)
-    for j=1:size(c,1)
-      conn_cell=load(char(strcat(c(i),'/conn_cells_incomp')))
+%do this from a script in matlab in the Learn folder seperately to index properly - to add back NA columns before concatenating
+
+load('conn_cells_incomp.mat')
+for i=1:size(c,1)
+    %conn_cell=load(char(strcat(c(i),'/conn_cells_incomp')))
+    missing=[13 61; 13 61; 61 13; 61 13];
+    for i=1:length(missing)
         for k=1:size(conn_cell,3)
             %FOR inserting columns next 
             len=size(conn_cell{k},2);
@@ -237,24 +243,13 @@ for i=1:length(missing)
             B = NaN(1,len)';
             C = [conn_cell{k}(missing(i):end,:)]';
             conn_cell{k}=[A B C];
-        end
-    end
-end
-
-for i=1:size(c,1)
-    conn_cell=load(char(strcat(c(i),'/conn_cells_incomp_test')))
-    missing=[13 61; 13 61; 61 13; 61 13];
-    for j=1:length(missing)
-        for k=1:size(conn_cell,3)
-            %FOR inserting columns next 
-            len=size(conn_cell{k},2);
-            A = [conn_cell{k}(1:(missing(j)-1),:)]';
-            B = NaN(1,len)';
-            C = [conn_cell{k}(missing(j):end,:)]';
-           conn_cell{k}=[A B C];
          end
     end
 end
+
+save('conn_cells', 'conn_cell')
+
+
 
 ```
 
