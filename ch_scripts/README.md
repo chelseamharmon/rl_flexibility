@@ -226,12 +226,36 @@ for i=1:size(c,1)
 
 end
 
+missing=[13 61; 13 61; 61 13; 61 13];
+for i=1:length(missing)
+    for j=1:size(c,1)
+      conn_cell=load(char(strcat(c(i),'/conn_cells_incomp')))
+        for k=1:size(conn_cell,3)
+            %FOR inserting columns next 
+            len=size(conn_cell{k},2);
+            A = [conn_cell{k}(1:(missing(i)-1),:)]';
+            B = NaN(1,len)';
+            C = [conn_cell{k}(missing(i):end,:)]';
+            conn_cell{k}=[A B C];
+        end
+    end
+end
 
 for i=1:size(c,1)
-       conn_cell=char(strcat(c(i),'/conn_cells_incomp.m'))
-       inPos=[13 26];  % location at which to insert
-       Nz=110;     % number of zeros to insert
-       con_cell=[conn_cell(1:inPos-1) repmat(0,1,N) x(nPos:end];
+    conn_cell=load(char(strcat(c(i),'/conn_cells_incomp_test')))
+    missing=[13 61; 13 61; 61 13; 61 13];
+    for j=1:length(missing)
+        for k=1:size(conn_cell,3)
+            %FOR inserting columns next 
+            len=size(conn_cell{k},2);
+            A = [conn_cell{k}(1:(missing(j)-1),:)]';
+            B = NaN(1,len)';
+            C = [conn_cell{k}(missing(j):end,:)]';
+           conn_cell{k}=[A B C];
+         end
+    end
+end
+
 ```
 
 
