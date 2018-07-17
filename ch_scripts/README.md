@@ -566,44 +566,264 @@ dlmwrite('/danl/Harmon_dynCon/behavior/choice_fb_long.csv',...
 ```
 
 
+### Prepare data for stan and run hierarchical bayesian model
+
+```.r
+
+#This code is also found in ~/Columbia/learninglab/dynCon/ch_scripts/RL_model/heirarBeysModel.R
+
+library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+dat <- read.csv('~/Columbia/learninglab/dynCon/ch_scripts/RL_model/choice_fb_long.csv')
+
+choices<-unique(na.omit(dat$choice))
+
+dat$chosen<-dat$choice
+dat$chosen[dat$choice==choices[1]]=1
+dat$chosen[dat$choice==choices[2]]=2
+dat$unchosen=abs(dat$chosen-3)
+dat$chose_two<-dat$chosen==2
+
+subs = unique(dat$sub);
+NS = length(subs);
+NStim=length(unique(dat$stim));
+MT=max(dat$trial);
+NT = array(0,NS);
+choice = array(0,c(NS,MT));
+unchoice=choice;
+choice_two=choice;
+rew = choice;
+stim=choice;
+
+for (i in 1:NS) {
+  NT[i] = nrow(subset(dat,sub==subs[i]));
+  
+  stim[i,1:NT[i]] = subset(dat,sub==subs[i])$stim;
+  
+  #choice and reward history
+  choice[i,1:NT[i]] = subset(dat,sub==subs[i])$chosen;
+  unchoice[i,1:NT[i]] = subset(dat,sub==subs[i])$unchosen;
+  
+  rew[i,1:NT[i]] = subset(dat,sub==subs[i])$fb;
+  
+  #based on choosing second option
+  choice_two[i,1:NT[i]] = subset(dat,sub==subs[i])$chose_two;
+}
+
+choice[is.na(choice)]<--1
+unchoice[is.na(unchoice)]<--1
+rew[is.na(rew)]<--1
+choice_two[is.na(choice_two)]<--1
+
+rl_standata = list(NS=NS, NC=2, NStim=NStim, MT=MT, NT= NT, choice=choice, 
+                   stim=stim,choice_two=choice_two,rew=rew );
+
+rl_fit <- stan(file = '~/Columbia/learninglab/dynCon/ch_scripts/RL_model/standard_rl.stan', 
+               data = rl_standata, iter = 1250, warmup = 250, chains = 4)
+
+save(rl_fit,file='~/Columbia/learninglab/dynCon/ch_scripts/RL_model/rl_fit')
+```
+
+
+### Extract parameters from model
+```.r
+#Code can be found in ~/Columbia/learninglab/dynCon/ch_scripts/RL_model/extraxtParamsFromModel.R
+
+library(rstan)
+#install.packages('ppcor')
+library(ppcor)
+
+fit_rl<-load('~/Columbia/learninglab/dynCon/ch_scripts/RL_model/rl_fit')
+fit_extract<-extract(rl_fit,permute=T)
+
+#fit_extract$beta_mean<-fit_extract$b1/fit_extract$b2 #<- dividing is wrong #Group distribution - beta estimate mean for each posterior sample (stan gamma distribution) **Should be multiplied not divided!! because inverse. STAN uses rate - invesre of scale - rather than scale. THe inverse mean formula matters based on inverse   
+#beta = inverse temperature 
+hist(fit_extract$beta_mean) #model uncertainty about the mean 
+#could also calculate SD 
+fit_extract$alpha_mean<-fit_extract$a1/(fit_extract$a1+fit_extract$a2)
+#alpha learning rate 
+hist(fit_extract$alpha_mean)
+
+#variance
+hist(fit_extract$b1*fit_extract$b2^2)
+
+#When parameters dont change in the paradigm- inverese temp is similar to percent correct - lower alpha better learning, higher inverse temp, better learning 
+
+#Check with Juliet's paper similar values 
+#with unstable estimes - first thing to try is to make hyperparameters - non informed priors - may be worth shrinking the dist. = making priors find more extreme values less plausble - and if the models is still fitting well then maybe thats meaningul -keep priors the same if comparing the two 
+
+#beta how much does value influence decision 
+
+
+
+betas<-apply(fit_extract$beta,2,mean)
+alphas<-apply(fit_extract$alpha,2,mean)
+
+for (i in 1:25){
+  plot(fit_extract$alpha[,i], fit_extract$beta[,i], xlab="alpha", ylab='beta', main=paste('Subj', i))
+}
+
+
+#Check out Gamma distribution calculations for fits - 
+#https://en.wikipedia.org/wiki/Gamma_distribution
+
+fit_extract$beta_mean<-fit_extract$b1*fit_extract$b2
+fit_extract$alpha_mean<-fit_extract$a1/(fit_extract$a1+fit_extract$a2)
+
+str_acorrel<-matrix(0,4000,6)
+str_bcorrel<-matrix(0,4000,6)
+str_apbcorrel<-matrix(0,4000,6)
+str_bpacorrel<-matrix(0,4000,6)
+wb_acorrel<-NULL
+wb_bcorrel<-NULL
+wb_apbcorrel<-NULL
+wb_bpacorrl<-NULL
+
+
+flexdat<-read.csv("flex_allrois.csv",header=F)
+flex_behav<-read.csv("flex_behav.csv",header=T)
+
+View(flex_behav)
+
+flexdat$Sub<-rep(seq(1,25,1),each=4)
+flexdat$Block<-rep(seq(1,4,1),times=25)
+flexdat$Corr<-flex_behav$correct
+flexdat$weights<-flex_behav$weights
+flexdat<-melt(flexdat,id=c("Sub","Block","Corr","weights"))
+names(flexdat)[c(5,6)]<-c("ROI","flex")
+flexdat$ROI<-as.factor(as.numeric(flexdat$ROI))
+meanflex_rois<-tapply(flexdat$flex,list(flexdat$Sub,flexdat$ROI),mean)
+meanflex<-rowMeans(meanflex_rois)
+
+str_ind=c(49,51,54,104,106,109);
+
+for( i in seq(1,dim(fit_extract$beta)[1],1)){
+  
+  betas_tmp=fit_extract$beta[i,]
+  alphas_tmp=fit_extract$alpha[i,]
+  k<-1
+  
+  wb_acorrel[i]<-cor(meanflex,alphas_tmp)
+  wb_bcorrel[i]<-cor(meanflex,betas_tmp)
+  wb_apbcorrel[i]<-pcor.test(meanflex,alphas_tmp,betas_tmp)[1] #partial correlations
+  wb_bpacorrel[i]<-pcor.test(meanflex,betas_tmp,alphas_tmp)[1] #partial correlations 
+  
+  for(j in str_ind){
+    str_acorrel[i,k]<-cor(meanflex_rois[,k],alphas_tmp)
+    str_bcorrel[i,k]<-cor(meanflex_rois[,k],betas_tmp)
+    
+    str_bpacorrel[i,k]<-pcor.test(meanflex_rois[,k],betas_tmp,alphas_tmp)$estimate
+    str_apbcorrel[i,k]<-pcor.test(meanflex_rois[,k],alphas_tmp,betas_tmp)$estimate
+    k<-k+1
+  }
+}
+
+par(mfrow=c(1,2))
+
+plot(rowMeans(str_bcorrel),rowMeans(str_acorrel),
+     col=rgb(0,0,0,alpha=0),pch=21,bg=rgb(0,0,0,alpha=.03),
+     xlab="Correlation with Beta",ylab="Correlation with Alpha",
+     main="Striatum Flexibility",xlim=c(-.1,.5))
+abline(v=0,lty=2)
+abline(h=0,lty=2)
+
+plot(wb_bcorrel,wb_acorrel,
+     col=rgb(0,0,0,alpha=0),pch=21,bg=rgb(0,0,0,alpha=.03),
+     xlab="Correlation with Beta",ylab="Correlation with Alpha",
+     main="Whole-brain Flexibility",xlim=c(-.1,.5))
+abline(v=0,lty=2)
+abline(h=0,lty=2)
+
+
+
+par(mfrow=c(1,1))
+plot(fit_extract$alpha[,1], fit_extract$beta[,1], xlab="alpha", ylab='beta', main='Subj 1')
+plot(fit_extract$alpha[,2], fit_extract$beta[,2], xlab="alpha", ylab='beta', main='Subj 2')
+plot(fit_extract$alpha[,3], fit_extract$beta[,3], xlab="alpha", ylab='beta', main='Subj 3')
+
+plot(fit_extract$alpha[,1], fit_extract$beta[,1], xlab="alpha", ylab='beta', main='Subj 1')
+
+```
+
 ### ML and fully Bayesian hierarchical models 
 Estimate the effect of striatal and whole-brain flexibility on reinforcement learning. See models.Rmd and models.pdf for more details. R
 
 ```.r
-library(reshape2)
-library(lme4)
-library(brms)
+#This code can also be found ~/Columbia/learninglab/dynCon/ch_scripts/RL_model/MLBayesianHeirarchicalModels.R
 
 #prepare data for binomial logistic modelling
+library(lme4)
+library(reshape2)
+library(brms)
+
+flexdat<-read.csv("flex_allrois.csv",header=F)
 
 #read in trial-by-by trial behavioral data 
-data<-read.delim('/data/engine/rgerraty/learn_dyncon/behav_data.tsv',header=1)
+data<-read.delim('behav_data.tsv',header=1)
+
+data<-read.csv('behav_data.csv',header=1)
+data <- data[data$group==7,]
+
+#Only have behavioral data : no brain data 
+data <- data[!data$subjectNum==716,]
+data <- data[!data$subjectNum==718,]
+
+
 data$block<-rep(rep(seq(1,4,1),each=30),25)
 
-#read in block-level flexibility data
-flexdat<-read.csv('/data/engine/rgerraty/learn_dyncon/flexdata500sim.csv',header=0)
-names(flexdat)<-c('subject','block','wb_flex','str_flex')
+flexdat$subject<-rep(seq(1,25,1),each=4)
+flexdat$Block<-rep(seq(1,4,1),times=25)
+flexdat$Corr<-melt(tapply(data$optCor,list(data$block,data$subjectNum),mean,na.rm=1))$value
 
-#get proportion correct for each block
-flex_behav$correct<- melt(tapply(data$optCor,list(data$block,data$subjectNum),mean,na.rm=1))$value
-
-#get weights (number of trials with responses) for each block
 nacount<-is.na(data$optCor)
 weights<-melt(tapply(nacount,list(data$block,data$subjectNum),sum))
-flex_behav$weights<-30-weights[,3]
+flexdat$weights<-30-weights[,3]
 
-#write out for future use
-flex_behav<-cbind(flex_behav,flexdat)
-write.csv(flex_behav,'/data/engine/rgerraty/learn_dyncon/flex_behav.csv')
+str_ind=c(49,51,54,104,106,109);
+
+flexdat<-melt(flexdat,id=c("subject","Block","Corr","weights"))
+
+names(flexdat)[c(5,6)]<-c("ROI","flex")
+
+flexdat$ROI<-as.factor(as.numeric(flexdat$ROI))
 
 
-#fit mixed-effects model in lme4 with wald approximation to p-value
-mlearn_glmer<-glmer(correct~str_flex+(str_flex||subject),data=flex_behav,family=binomial,weights=flex_behav$weights)
+flexdat_str<-subset(flexdat,ROI %in% str_ind)
+flexdat_str$ROI<-as.factor(flexdat_str$ROI)
+
+flexdat_str_avg<-melt(tapply(flexdat_str$flex,list(flexdat_str$subject,flexdat_str$ROI),mean,na.rm=1))
+names(flexdat_str_avg)<-c("subject","ROI","flex")
+flexdat_str_avg<-subset(flexdat_str_avg,ROI %in% str_ind)
+
+flexdat_str$meanflex<-rep(flexdat_str_avg$flex,each=4)
+
+flexdat_str_melt<-melt(tapply(flexdat_str$flex,list(flexdat_str$subject,flexdat_str$Block),mean))
+names(flexdat_str_melt)<-c("subject","Block","flex")
+
+
+
+flexdat_str_melt$correct<-melt(tapply(flexdat_str$Corr,list(flexdat_str$subject,flexdat_str$Block),mean))$value
+flexdat_str_melt$weights<-melt(tapply(flexdat_str$weights,list(flexdat_str$subject,flexdat_str$Block),mean))$value
+
+
+
+m_str<-glmer(correct~flex+(flex||subject),
+             family=binomial,weights=weights,
+             data=flexdat_str_melt)
+
+write.csv(flexdat_str_melt,'flex_behav.csv')
 
 #for posterior inference, run bayesian model using brms wrapper for stan
 options(mc.cores = parallel::detectCores())
-flex_behav$numcorr<-as.integer(flex_behav$correct*flex_behav$weights)
-mlearn_stan<-brm(numcorr~str_flex+(str_flex|subject),data=flex_behav,family=binomial)
+flexdat_str_melt$numcorr<-as.integer(flexdat_str_melt$correct*flexdat_str_melt$weights)
+mlearn_stan<-brm(numcorr~flex+(flex|subject),data=flexdat_str_melt,family=binomial)
+
+##
+Warning messages:
+  1: There were 15 divergent transitions after warmup. Increasing adapt_delta above 0.8 may help. See
+http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup 
+2: Examine the pairs() plot to diagnose sampling problems
 
 
 ```
