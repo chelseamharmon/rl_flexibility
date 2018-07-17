@@ -529,6 +529,42 @@ dlmwrite('/danl/Harmon_dynCon/flex_allroisRest.csv',flex_allrois)
 ```
 
 
+### Combine raw reinforcement learning data from individual subjects 
+
+```.matlab
+a=dir('/danl/Harmon_dynCon/behavior/7*_tb_l*_svlo*.mat');
+
+a={a.name};
+
+longform=[];
+for k = 1:length(a)
+	k
+	clear subnum chose_right shown_corr trial
+	filea=a{(k)};
+	load(a{(k)});	
+    subnum=str2double(num2str(a{k}(1:3)))';
+    chose_right=double(strcmp(resp,'b'))';
+    shown_corr=double(shown_corr)';
+    no_resp=shown_corr==2;
+    chose_right(no_resp)=NaN;
+    shown_corr(no_resp)=NaN;
+    ntrials=size(resp',1);
+    trial=1:ntrials';
+    longform=[longform;repmat(subnum,ntrials,1) stim_shown' trial' chose_right shown_corr];
+end
+header={'sub','stim','trial','choice','fb'};
+header2=sprintf('%s,',header{:});header2(end)=[];
+dlmwrite('/danl/Harmon_dynCon/behavior/choice_fb_long.csv',...
+	header2,'')
+
+dlmwrite('/danl/Harmon_dynCon/behavior/choice_fb_long.csv',...
+	longform,'-append','delimiter',',')
+
+
+#do not run 
+!cp /danl/Harmon_dynCon/behavior/choice_fb_long.csv ~/GitHub/rl_flexibility/RL_model/choice_fb_long.csv
+```
+
 
 ### ML and fully Bayesian hierarchical models 
 Estimate the effect of striatal and whole-brain flexibility on reinforcement learning. See models.Rmd and models.pdf for more details. R
@@ -542,7 +578,7 @@ library(brms)
 
 #read in trial-by-by trial behavioral data 
 data<-read.delim('/data/engine/rgerraty/learn_dyncon/behav_data.tsv',header=1)
-data$block<-rep(rep(seq(1,4,1),each=30),22)
+data$block<-rep(rep(seq(1,4,1),each=30),25)
 
 #read in block-level flexibility data
 flexdat<-read.csv('/data/engine/rgerraty/learn_dyncon/flexdata500sim.csv',header=0)
