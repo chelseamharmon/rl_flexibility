@@ -367,22 +367,44 @@ To add back in the missing columns/rows for subject 713 before pulling all subj 
 ```
 %do this from a script in matlab in the Learn folder seperately to index properly - to add back NA columns before concatenating
 
-load('conn_cells_incomp.mat')
-for i=1:size(c,1)
-    missing=[13 61; 13 61; 61 13; 61 13];
+load('flex.mat')
+flexTEMP=flex
+missing=[13 61; 61 13]
+
     for i=1:length(missing)
-        for k=1:size(conn_cell,3)
-            %FOR inserting columns next 
-            len=size(conn_cell{k},2);
-            A = [conn_cell{k}(1:(missing(i)-1),:)]';
-            B = NaN(1,len)';
-            C = [conn_cell{k}(missing(i):end,:)]';
-            conn_cell{k}=[A B C];
-         end
+        %FOR inserting rows
+        len=size(flexTEMP,i);
+        A = [flexTEMP(1:missing(i)-1,:)];
+        B = NaN(1,4);
+        C = [flexTEMP(missing(i):end,:)];
+        flexTEMP=[A; B; C];
     end
+save('flexTEMP', 'flexTEMP')
+
+load('a_mat.mat')
+a_matTEMP=a_mat;
+a_matTEST=zeros(110,110,32);
+missing=[13 61; 61 13];
+for k=1:size(a_mat,3)
+    a_matTEMP=a_mat(:,:,k)
+    missing=[13 61; 61 13]
+    for i=1:length(missing)
+            %For inserting rows
+            len=size(a_matTEMP,i);
+            A = [a_matTEMP(1:missing(i)-1,:)]';
+            B = NaN(1,len)';
+            C = [a_matTEMP(missing(i):end,:)]';
+            a_matTEMP1=[A B C];
+            %For inserting columns
+            len=size(a_matTEMP1,2)
+            A = [a_matTEMP1(1:missing(i)-1,:)];
+            B = NaN(1,len);
+            C = [a_matTEMP1(missing(i):end,:)];
+            a_matTEMP=[A; B; C];
+    end
+    a_matTEST(:,:,k)=a_matTEMP;
 end
 
-save('conn_cells', 'conn_cell')
 ```
 
 
@@ -420,11 +442,27 @@ meanflex=meanflex(:);
 roi_names=strread(roi_names,'%s');
 str_ind=[49,51,54,104,106,109];
 roi_names(str_ind)
+roi_names(hipp_ind)
 
 strflex=squeeze(mean(flex_cat(str_ind,:,:)));
 strflex=strflex(:);
 
 plot(squeeze(mean(flex_cat(str_ind,:,:))))
+
+%Hippocampus 
+hipp_ind=[9, 69];
+left_hipp=[9];
+right_hipp=[69];
+hippflex=squeeze(mean(flex_cat(hipp_ind,:,:)));
+hippflex=hippflex(:);
+hippflexR=squeeze(mean(flex_cat(right_hipp,:,:)));
+hippflexR=hippflexR(:);
+hippflexL=squeeze(mean(flex_cat(right_hipp,:,:)));
+hippflexL=hippflexL(:);
+plot(squeeze((flex_cat(right_hipp,:,:))))
+plot(squeeze((flex_cat(left_hipp,:,:))))
+
+plot(squeeze(mean(flex_cat(hipp_ind,:,:))))
 
 %write out csv for modeling in R
 flexdata=[sub block meanflex strflex]
