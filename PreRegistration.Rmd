@@ -1,8 +1,8 @@
 ---
-title: "Reinforcement Learning Dynamic Flexibility in Adolescence"
-author: "Chelsea Harmon, Raphael Gerraty, Juliet Davidow, Karin Foerde, Adriana Galvan, Daphna Shohamy"
-date: "May 10, 2018"
-output: pdf_document
+title: "Reinforcement Learning and Dynamic Network Flexibility in Adolescence"
+author: "Chelsea M. Harmon, Raphael T. Gerraty, Juliet Y. Davidow, Karin Foerde, Adriana Galvan, Danielle S. Bassett, Daphna Shohamy"
+date: "May 21, 2018"
+output: word_document
 #csl: apa.xml
 bibliography: ["DynamicConnectivity.bib"]
 ---
@@ -15,60 +15,89 @@ library(papaja)
 
 # What's the main question being asked or hypothesis being tested in this study? (optional)
 
+## 1. Does greater striatal-cortical dynamic flexibility explain better reinforcement learning performance in adolescents?
+
+Complex learning behaviors involve the integrated action of distributed brain circuits. One example is reinforcement learning that requires the orchestration of several key brain circuits including those that are pertinent for reward valuation, decision making, and memory to integrate visual, motor, and cognitive information. Importantly, in this type of learning paradigm, choices must be updated over the course of the task as reinforcement information accumulates. Moreover, previous research highlights that time-varying changes in patterns of functional connectivity can reflect the dynamics of learning task demands. By formally encoding such changes in network models and applying tools from graph theory, prior work has demonstrated that dynamic network flexibility -DNF- tracks the course of motor learning [@Bassett2011] and is a proposed mechanism for information integration necessary for effective reinforcement learning [@Gerraty2018] in adults. Further, it has recently been proposed that dynamic changes in communication between the striatum and distributed brain networks provide a mechanism for information integration during reinforcement learning in adults [@Gerraty2018]. Specifically, flexibility in striatal-cortical circuits relates to learning performance, and whole brain dynamic network flexibility predicts individual differences in parameters from reinforcement learning models.
+
+Adolescence is a unique period marked by senstivity to reward [@Cohen2010] and poor impulse control resulting from differential neural patterns across the brain (see [@Casey2008] for review). As such, in an adolescent sample, 13-17 year olds have demonstrated better learning performance on a reinforcement learning task compared to an adult sample [@Davidow2016]. The ventral striatum has been consistently implicated as sensitive to unexpected positive feedback as reflected by model-based reward prediction error signals [@Pagnoni2002; @Cohen2010]. However, how neural dynamic network flexibility may support the integration of information involved in learning and updating over time during adolescence has remained elusive. 
+
+Previous literature has largely focused on resting state functional connectivity networks across development [@Gu2015; @DamienA.FairNicoU.F.DosenbachJessicaA.ChurchAlexanderL.CohenShefaliBrahmbhattFrancisM.MiezinDeannaM.BarchMarcusE.RaichleStevenE.Petersen2007]; however, the role of dynamic network flexibility -DNF-  during an activity, such as active learning and updating information during task, in adolescence has not been studied. Therefore, the first aim of this research is to identify how dynamic network flexibility of the striatal-cortical circuits supports reinforcement learning in adolescence (13-17 years). Quantifying the modular architecture of an evolving system over the course of learning in a sample that performs better will provide insight into how the brain is optimized for learning associations in the environment and will give us clues into how these neural circuits develop between adolescence and young adulthood. We predict that greater network flexibility will be associated with better learning performance in an adolescent sample. 
 
 
-## 1. Does greater striatal-cortical dynamic flexibility explain enhanced reinforcement learning performance in adolescents.
+## 2. What is the role of dynamic network flexibility of the hippocampus in learning performance?
 
-The working proposed mechanism for information integration during reinforcement learning is dynamic changes in network communication between the striatum and distributed brain networks. Adult data demonstrates greater dynamic flexibility of striatal-cortical circuits is involved in participants' learning rate over time [@Gerraty2016]. In the same task, an adolescent sample demonstrates greater behavioral reinforcement learning compared to adults. Using methods described in [@Gerraty2016], this study aims to identify if these behavioral benefits in reinforcement learning in the adolescents are explained by greater network flexibility of the striatal-cortical circuitry. We predict that greater network flexibility of striatal-cortical circuitry will positively correlate with better behavioral reinforcement learning in an adolescent sample. 
+Prior research has found that reinforcement learning behavioral benefits in adolescents are related to functional activation of the hippocampus to prediction error as well as greater hippocampus and putamen connectivity [@Davidow2016]. Therefore, the second aim of this study is to use network analysis to measure dynamic flexibility of the hippocampus to identify whether dynamic changes in network communication with the hippocampus explain better performance in the adolescent sample. We expect that greater DNF of the hippocampus will predict learning over time and may explain age group differences in better learning performance and reinforcement learning model parameters. 
 
-## 2. What is the role of dynamic flexibility of the hippocampus in greater learning performance 
+## 3. Does whole-brain flexibility predict individual learning rate in adolescents? 
 
-Reinforcement learning behavioral benefits during adolescence are related to functional connectivity between the hippocampus and the striatum at the time of reinforcement [@Davidow2016]. Given the important role of the hippocampus, the second aim of this study is to measure dynamic flexibility of the hippocampus and the whole-brain to identify if dynamic changes in network communication with the hippocampus help explain neural information integration and the coinciding behavioral benefits in the adolescent sample. We expect that greater dynamic flexibility of the hippocampus will predict learning over time in addition to group differences in reinforcement learning rate.   
+While whole-brain dynamic flexibility during reinforcement learning has been investigated in the adult sample, it has yet to be characterized during adolescence. Given that whole-brain dynamic flexibility predicts a lower learning rate in adults [@Gerraty2018] and adolescents overall have a lower learning rate than adults, we suspect adolescents will have overall greater whole-brain flexibility compared to the adult group. Moreover, we predict that similar to the adult sample, whole-brain dynamic flexibility will be associated with individual difference in learning parameters to predict learning rate over time.
 
 
 # Describe the key dependent variable(s) specifying how they will be measured. (optional)
  
-The key dependent variables in this study are 1. overall performance measured by learning accuracy (percent optimal choice) and 2. estimated learning rate from the reinforcement learning model. 
+The key dependent variables in this study are 1. overall performance measured by learning accuracy (percent optimal choice) and 2. estimated parameters from the reinforcement learning model, learning rate (an index of how an individual scales prediction error learning signals to update future choices) and inverse temperature (an index of fidelity to choosing the highest value option, vs exploring the alternative option which may have a lower expected value for the outcome and thus a lower probability of being chosen).
 
 
 # How many and which conditions will participants be assigned to? (optional)
-None
+All participants completed the same task in the scanner. 4 probabilistic reinforcement learning blocks followed by a surprise episodic memory test. Stimuli will be counterbalanced across subjects. 
 
+![Task Design.](preregimages/task.jpg)
 
 # Specify exactly which analyses you will conduct to examine the main question/hypothesis. (optional)
 
-### Behavioral Analysis 
-Performance: Overall performance will be measured by learning accuracy. During each learning phase (4 blocks) a percent correct score will be computed based on optimal choice, regardless of feedback. 
+## Behavioral Analysis 
+### Learning Performance: 
+Overall performance will be measured by learning accuracy. During each learning phase (4 blocks) a percent correct score will be computed based on optimal choice, regardless of the presented feedback.
 
-Learning Rate: Based on feedback recieved and whether the subject made the optimal choice on a trial-by-trial basis we will characterize learning rate using subjects' decisions (choice behavior) using a reinforcement learning model (Daw, 2011; Sutton and Barto 1998). Briefly, this model will evaluate expected value for a given choice at time (t) based on updating of reinforcement outcome via prediction error. With two additional free parameters: 1. alpha - updating, the extent to which value is updated by feedback from a signal trial, and 2. beta - the inverse temperature, the probability of making a particular choice using a softmax function (Daw, 2011; Ishi et al., 2002). 
+### Learning Rate: 
+Based on feedback received and whether the subject made the optimal choice on a trial-by-trial basis we will characterize learning rate using subjects' decisions (choice behavior) using a reinforcement learning model [@Daw2011; @Sutton1981]). Briefly, this model will evaluate expected value for a given choice at time (t) based on updating of reinforcement outcome via prediction error. With two additional free parameters: 1. alpha - updating, the extent to which value is updated by feedback from a signal trial, and 2. beta - the inverse temperature, the probability of making a particular choice using a softmax function [@Daw2011; @Ishii2002]. 
 
-### fMRI Analysis
+## fMRI Analysis
 
-Given how dynamic the brain is in integrating and updating information from the environment, this analysis aims to use a multilayer approach to characterize network modularity and community strucuture over time (Jutla et al., 2011; Mucha et al., 2010). To assess dynamic connectivity between (regions of interest) ROIs (110 subcortical and cortical brain regions) and two a priori seeds, striatum and hippocampus, time course data will be subdivided into 8 time windows of 25 TRs each (per block). Flexibility measures, the extent to which a region changes its community allegiance over time (Bassett et al., 2011), will be computed for each learning block. Flexibility of a priori regions will be compared to a generalized flexiblity score assessed across the whole-brain for each subject. 
+### Preprocessing 
+Functional images will be preprocessed using FSL's FMRI Expert Analysis Tool (FEAT [@Smith2004]). Images from each learning block will be high-pass filtered at *f* > 0.008 Hz, spatially smoothed with a 5mm FWHM Guassian kernel, grand-mean scaled, and motion corrected to their median image using an affine transformation with tri-linear interpolation. The first three images will be removed to account for saturation effects. Functional and anatomical images will be skull-stripped using FSL's Brain Extraction Tool. Functional images from each block will be co-registered to subject's anatomical images and non-linearly transformed to a standard template (T1 Montreal Neurological Institute template, voxel dimensions 2mm cubed(*Figure out how to change cubed to 3*)) using FNIRT [@AnderssonJ.SmithS.andJenkinson2008]. Following image registration, time courses will be extracted for each block from 110 cortical and subcortical regions of interest (ROIs) segmented from FSL's Harvard-Oxford Atlas. Due to known effects of motion on measures of funtional connectivity [@Power2012; @Satterthwaite2012], time courses will be further proprocessed via a nuisance regression with six translation and rotation parameters from the motion correction transformation, average CSF, white matter, and whole brain time courses, as well as the first derivatives, squares, and squared derivatives of each of these confound predictors [@Satterthwaite2013a].
 
-The examine the effects of flexibility on learning from feedback, we will estimate a generalized mixed-effects model predicting optimally correct choices with flexilbity estimates for each block with a logistic link function, using Maximum Likelihood (ML) approximation implemented in the lme4 package (Bates et al., 2015). We will include a random effect of subject, allowing for different effects of flexibility on learning for each subject, while contraining these effects with the group average. Average flexibility across sessions will also be included as a fixed effect in the model. 
+
+### Dynamic Network Connectivity
+#### Whole Brain
+Given how dynamic the brain is in integrating and updating information from the environment, this analysis aims to use a multilayer approach to characterize network modularity and community structure (spatially) over time (temporally) [@JutlaI.S.JeubL.G.andMucha2011; @Mucha2010]. To assess dynamic connectivity of the whole brain we will use 110 subcortical and cortical brain ROIs from the Harvard-Oxford atlas. Time course data will be subdivided into 8 50s time windows of 25 TRs each (per block). For each block, connectivity is quantified as the magnitude-squared coherence between each pair of ROIs at *f* = 0.06-0.12 Hz in order to assess modularity over short time window consistent with previous reports [@Bassett2011; @Bassett2013). This frequency range is chosen to approximate the frequency envelope of the hemodynamic response, allowing us to detect changes as slow as 3 cycles per window with a 2 second TR. Subject-specific 110x110x8 connectivity matrices for each learning block (4) will be created containing coherence values ranging from 0 and 1. Regional distribution of network flexibility across the whole brain will be examined across the entire learning task. We predict that whole-brain flexibility (averaged across all ROIs) will increase in early learning blocks and decrease in later stages of the task in adolescence, as found in the adult sample. 
+
+To examine the effects of flexibility on learning behavior, we will estimate a generalized mixed-effects model predicting optimally correct choices with flexibility estimates for each block with a logistic link function, using Maximum Likelihood (ML) approximation implemented in the lme4 package [@Bates]. We will include a random effect of subject, allowing for different effects of flexibility on learning for each subject, while constraining these effects with the group average. Average flexibility across sessions will also be included as a fixed effect in the model.
+
+#### Striatal & Hippocampal Flexibility & Learning Performance 
+We will also probe two a priori seeds, the striatum and hippocampus bilaterally. Flexibility measures, the extent to which a region changes its community allegiance over time [@Bassett2011], will be computed for each learning block. Flexibility of a priori regions will be compared to a generalized flexibility score assessed across the whole-brain for each subject.
+
+Correlations between striatum & hippocampus flexibility and learning performance in adolescents will be run. We will also probe distinct sub-regions of the striatum, we will perform separate tests with the right and left caudate, putamen, and nucleus accumbens. Will we also further look at subsections of the hippocampus (i.e., anterior). 
 
 
 # Any secondary analyses? (optional)
 
-To explore the relationship between network dynamics and the important role of the hippocampus in learning and memory systems, we will also regress flexibility statistics against subsequent memory scores for the trial-unique objects presented during feedback. Previous reports find no association between memory and the striatal ROI, however given the role of the hippocampus in memory, we will conduct an exploratory analysis to examine the role of network flexibilty of the hippocampus in episodic memory. 
+#### Memory Performance & Hippocampal Flexibility 
+Followed by the scanning session, subjects were given a surprise test of recognition memory for the images that co-occurred with feedback presentations during the learning task.
 
+To explore the relationship between network dynamics and the important role of the hippocampus in learning and memory systems, we will also regress flexibility statistics against subsequent memory scores for the trial-unique objects presented during feedback. Previous reports in adults find no association between memory and the striatal ROI; however, given the role of the hippocampus in episodic memory and the important finding that hippocampus connectivity relates to better learning the adolescent sample, we will conduct an exploratory analysis to examine the role of network flexibility of the hippocampus in memory performance.
 
 
 # How many observations will be collected or what will determine sample size? No need to justify decision, but be precise about exactly how the number will be determined. (optional)
- 
-The sample will include usable data from 22 adults, 24-30 years old, (total 31 collected) and 25 adolescents, 13-17 years old, (total 41 collected). These numbers are based on the data quality and how many individuals were already collected in the experiment. 
 
+The sample will include usable data from 22 adults, 24-30 years old, (total 25 scanned, 3 excluded for two technical issues and one incidental finding) and 25 adolescents, 13-17 years old, (total 28 scanned, two excluded for technical issues and one for excessive motion). Behavioral data were collected from a total of 31 adults and 43 adolescents. These numbers are based on the data quality and how many individuals have already participated in the experiment. There is a possibility additional subjects will be excluded for additional motion correction preprocessing outline above (see preprocessing)
 
 # Anything else you would like to pre-register? (e.g., data exclusions, variables collected for exploratory purposes, unusual analyses planned?) (optional)
 
-1. Prediction Error results 
+### Data exclusion 
+As previous research on these groups has done, subjects will be excluded for technical issues in behavioral data collection and incidental neurological findings and excessive motion in the fMRI task.
 
-2. Learning without reinforcement 
+### Variables collected for exploratory purposes  
 
-3. Resting state data 
+#### 1. Prediction Error results 
+
+#### 2. Demonstration of learning without reinforcement 
+
+#### 3. Resting state data
+Subjects participated in two resting state scans, one before the learning blocks and one after the learning blocks. Exploratory analysis may include differences in network flexibility during resting state before and after task. Differences between task and rest network flexibility may also be examined in understanding the system development independently of task stimuli, given that executive network switching has been shown to increase with age [@Chai2017].
+
+#### 4. Subsequent memory test 
+Followed by the scanning session, subjects were given a surprise test of recognition memory for the outcome images of the learning task. 
 
 
-#FLUX Abstract 
-1600 characters including spaces - 
-1500 characters for travel awards - 
+## Bibliography 
