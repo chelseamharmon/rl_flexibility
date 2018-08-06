@@ -832,6 +832,8 @@ http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 R
 
 ```.r
+#This code can also be found ~/Columbia/learninglab/dynCon/ch_scripts/RL_model/wholeBrainSearchforEffectsofFlexonLearning.R
+
 #load in data
 library(lme4)
 roi_data<-read.csv('/data/engine/rgerraty/learn_dyncon/flex_allrois.csv',header=0)
