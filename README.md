@@ -678,7 +678,7 @@ str_bpacorrel<-matrix(0,4000,6)
 wb_acorrel<-NULL
 wb_bcorrel<-NULL
 wb_apbcorrel<-NULL
-wb_bpacorrl<-NULL
+wb_bpacorrel<-NULL
 
 
 flexdat<-read.csv("flex_allrois.csv",header=F)
@@ -836,8 +836,8 @@ R
 
 #load in data
 library(lme4)
-roi_data<-read.csv('/data/engine/rgerraty/learn_dyncon/flex_allrois.csv',header=0)
-behav<-read.csv('/data/engine/rgerraty/learn_dyncon/flex_behav.csv')
+roi_data<-read.csv('flex_allrois.csv',header=0)
+behav<-read.csv('flex_behav.csv')
 
 p<-NULL
 b<-NULL
@@ -853,8 +853,14 @@ for(i in 1:dim(roi_data)[2]){
     b[i]<-NA
   }
 }
-write(p,'/data/engine/rgerraty/learn_dyncon/p_vals_learning_glm.csv')
-write(b,'/data/engine/rgerraty/learn_dyncon/b_vals_learning_glm.csv')
+write(p,'p_vals_learning_glm.csv')
+write(b,'b_vals_learning_glm.csv')
+
+##
+Warning message:
+In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,  :
+  Model failed to converge with max|grad| = 0.00105927 (tol = 0.001, component 1)
+
 ```
 
 ### Combine module allegiance matrices for striatum ROIs across subjects
