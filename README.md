@@ -318,9 +318,7 @@ end
 ```
 
 forRest
-#This needs to be fixed - do we want to concatenate across both runs? RUns needs to be updated 
 ```.matlab
-#Do separately for 70* 71* and 72* by using: 
 screen 
 control^ a d 
 screen -r 
@@ -340,14 +338,14 @@ addpath ~/GitHub/rl_flexibility/Bassett_Code/
 c=strread(b,'%s');
 
 %concatenate runs for each subject
-numruns=4
+numruns=2
 k=1;
 for j=1:size(c,1)/numruns
     c(k)
     conn_cell_cat=[];
     for i=1:numruns 
         load(strcat(char(c(k-1+i)),'/conn_cells'))
-        conn_cell_cat=cat(3,conn_cell_cat,conn_cell)
+        conn_cell_cat=cat(3,conn_cell_cat_rest,conn_cell)
     end
 
     %network_diags code:
@@ -355,9 +353,9 @@ for j=1:size(c,1)/numruns
     %gives flexibility for each run
     %also allegiance matrix (not using yet)
     %need to specify number of blocks, simulations, coupling, resolution
-    [a_mat,flex]=network_diags(conn_cell_cat,4,500,1,1.1813)
-    save(char(strcat(c(k),'/../../a_mat')),'a_mat')
-    save(char(strcat(c(k),'/../../flex')),'flex')
+    [a_mat_rest,flex_rest]=network_diags(conn_cell_cat,4,500,1,1.1813)
+    save(char(strcat(c(k),'/../../a_mat_rest')),'a_mat_rest')
+    save(char(strcat(c(k),'/../../flex_rest')),'flex_rest')
     k=k+numruns;
 end
 ```
