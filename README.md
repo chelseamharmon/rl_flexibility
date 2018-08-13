@@ -342,7 +342,7 @@ numruns=2
 k=1;
 for j=1:size(c,1)/numruns
     c(k)
-    conn_cell_cat=[];
+    conn_cell_cat_rest=[];
     for i=1:numruns 
         load(strcat(char(c(k-1+i)),'/conn_cells'))
         conn_cell_cat=cat(3,conn_cell_cat_rest,conn_cell)
@@ -476,28 +476,28 @@ end
 dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
 ```
 
-forRest #This also was not run based on blocks 
+forRest 
 ```.matlab
 
 %load data and concatenate flexibility statistics
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/flex.mat');
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/flex_rest.mat');
 %do separately above and below 
 
 
 c=strread(b,'%s');
-flex_cat=[];
+flex_cat_rest=[];
 for j=1:size(c,1)
     load(char(c(j)))
-    flex_cat=cat(3,flex_cat,flex)
+    flex_cat_rest=cat(3,flex_cat_rest,flex_rest)
 end
-plot(squeeze(mean(flex_cat)))
+plot(squeeze(mean(flex_cat_rest)))
 
 block=repmat([1:4]',25,1);
 sub=repmat([1:25]',1,4)'
 sub=sub(:);
 
 %reshape whole-brain average flexibility
-meanflex=squeeze(mean(flex_cat));
+meanflex=squeeze(mean(flex_cat_rest));
 meanflex=meanflex(:);
 
 %get striatal average flexibility
@@ -507,7 +507,7 @@ roi_names=strread(roi_names,'%s');
 str_ind=[49,51,54,104,106,109];
 roi_names(str_ind)
 
-strflex=squeeze(mean(flex_cat(str_ind,:,:)));
+strflex=squeeze(mean(flex_cat_rest(str_ind,:,:)));
 strflex=strflex(:);
 
 plot(squeeze(mean(flex_cat(str_ind,:,:))))
@@ -519,11 +519,13 @@ dlmwrite('/danl/Harmon_dynCon/flexdataRest.csv',flexdata)
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
 flex_allrois=[];
-for i=1:size(flex_cat,3)
-  flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
+for i=1:size(flex_cat_rest,3)
+  flex_allrois=[flex_allrois;flex_cat_rest(:,:,i)’];
 end
 
 dlmwrite('/danl/Harmon_dynCon/flex_allroisRest.csv',flex_allrois) 
+
+
 ```
 
 
