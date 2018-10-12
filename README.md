@@ -900,9 +900,8 @@ dlmwrite('/data/engine/rgerraty/learn_dyncon/alleg_long.csv',...
 
 
 ### Assessing motion 
-matlab 
 
-```
+```.matlab
 %read in all subject/run mc motion files 
 [a,b]=system('ls -d /danl/Harmon_dynCon/7*/Learn?_PEpriorD.feat/mc/prefiltered_func_data_mcf_rel_mean.rms');
 
