@@ -900,7 +900,7 @@ dlmwrite('/data/engine/rgerraty/learn_dyncon/alleg_long.csv',...
 
 
 ### Assessing motion 
-
+Adolescents 
 ```.matlab
 %read in all subject/run mc motion files 
 [a,b]=system('ls -d /danl/Harmon_dynCon/7*/Learn?_PEpriorD.feat/mc/prefiltered_func_data_mcf_rel_mean.rms');
@@ -915,6 +915,23 @@ for i=1:length(c)
 end 
 
  dlmwrite('/danl/Harmon_dynCon/motion.csv', motion)
+```
+
+Adults 
+```.matlab
+%read in all subject/run mc motion files 
+[a,b]=system('ls -d /data/engine/rgerraty/learn_dyncon/4*/Learn?_PEprior.feat/mc/prefiltered_func_data_mcf_rel_mean.rms');
+
+%do separately above and below 
+c=sort(strread(b,'%s'))
+motion = (1:length(c))'
+
+for i=1:length(c)
+	load(c{i})
+	motion(i) = prefiltered_func_data_mcf_rel_mean
+end 
+
+ dlmwrite('/data/engine/charmon/motion.csv', motion)
 ```
 
 
