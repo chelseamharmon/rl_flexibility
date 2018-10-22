@@ -280,9 +280,9 @@ matlab -nosplash -nodisplay
 
 
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
-addpath ~/GitHub/rl_flexibility
-addpath ~/GitHub/rl_flexibility/GenLouvain/
-addpath ~/GitHub/rl_flexibility/Bassett_Code/
+addpath ~/Github/rl_flexibility
+addpath ~/Github/rl_flexibility/GenLouvain/
+addpath ~/Github/rl_flexibility/Bassett_Code/
 
 %read in data
 [a,b]=system('ls -d /danl/Harmon_dynCon/72*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
@@ -326,9 +326,9 @@ matlab -nosplash -nodisplay
 
 
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
-addpath rl_flexibility
-addpath rl_flexibility/GenLouvain/
-addpath rl_flexibility/Bassett_Code/
+addpath ~/Github/rl_flexibility
+addpath ~/Github/rl_flexibility/GenLouvain/
+addpath ~/Github/rl_flexibility/Bassett_Code/
 
 %read in data
 [a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
