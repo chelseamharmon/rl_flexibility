@@ -280,11 +280,13 @@ matlab -nosplash -nodisplay
 
 
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
-addpath ~/Github/rl_flexibility
-addpath ~/Github/rl_flexibility/GenLouvain/
-addpath ~/Github/rl_flexibility/Bassett_Code/
+addpath ~/GitHub/rl_flexibility
+addpath ~/GitHub/rl_flexibility/GenLouvain/
+addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 %read in data
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
+
 [a,b]=system('ls -d /danl/Harmon_dynCon/72*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
 
 [a,b]=system('ls -d /danl/Harmon_dynCon/713/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
@@ -292,7 +294,7 @@ addpath ~/Github/rl_flexibility/Bassett_Code/
 
 %do the above first then do the below 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 
 %concatenate runs for each subject
 numruns=4
@@ -326,9 +328,9 @@ matlab -nosplash -nodisplay
 
 
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
-addpath ~/Github/rl_flexibility
-addpath ~/Github/rl_flexibility/GenLouvain/
-addpath ~/Github/rl_flexibility/Bassett_Code/
+addpath ~/GitHub/rl_flexibility
+addpath ~/GitHub/rl_flexibility/GenLouvain/
+addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 %read in data
 [a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
