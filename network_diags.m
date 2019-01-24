@@ -13,7 +13,7 @@ function [a_mat,flex,prom,S_tmp,Q_tmp]=network_diags(conn_cells,blocks,sim,gamma
 % partition of the network. 
 
 
-S_tmp = zeros(size(conn_cell{1},1),1,sim);
+S_tmp = zeros(size(conn_cells{1},1),1,sim);
 
 for i=1:sim
 	[S_tmp(:,:,i), Q_tmp(i)]=multiord_res_norm(conn_cells,gamma,res);
