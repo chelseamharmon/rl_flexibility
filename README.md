@@ -427,7 +427,7 @@ Input coherence matrix for each block. Also need number of blocks,
 resolution and coupling parameters. In Matlab
 
 ```.matlab
-%for
+%forTask
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
 addpath ~/GitHub/rl_flexibility
 addpath ~/GitHub/rl_flexibility/GenLouvain/
@@ -446,7 +446,8 @@ addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 c=sort(strread(b,'%s'));
 
-maxComm = zeros(1,size(S_tmp,3))';
+sim=500; 
+maxComm = zeros(1,sim)';
 %concatenate runs for each subject
 numruns=4
 k=1;
@@ -520,7 +521,8 @@ addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 c=strread(b,'%s');
 
-maxComm = zeros(1,size(S_tmp,3))';
+sim=500; 
+maxComm = zeros(1,sim)';
 %concatenate runs for each subject
 numruns=2
 k=1;
@@ -537,7 +539,7 @@ for j=1:size(c,1)/numruns
     %gives flexibility for each run
     %also allegiance matrix (not using yet)
     %need to specify number of blocks, simulations, coupling, resolution
-    [a_mat,flex, prom, S_tmp, Q_tmp]=network_diags(conn_cell_cat,4,500,1,1.1813)
+    [a_mat,flex, prom, S_tmp, Q_tmp]=network_diags(conn_cell_cat,2,500,1,1.1813)
     save(char(strcat(c(k),'/../../../a_mat_rerun1')),'a_mat')
     save(char(strcat(c(k),'/../../../flex_rerun1')),'flex')
     save(char(strcat(c(k),'/../../../prom')),'prom')
