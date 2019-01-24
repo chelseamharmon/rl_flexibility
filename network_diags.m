@@ -26,7 +26,7 @@ for i=1:sim
 end;
 flex=mean(flex_tmp,3);
 prom=mean(prom_tmp,3);
-S=unique(S_tmp,3); \
+S=unique(S_tmp,3); 
 
 for h=1:size(conn_cells,3)
 	for i=1:sim
