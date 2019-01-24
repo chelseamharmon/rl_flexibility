@@ -11,6 +11,11 @@ Descriptions and example scripts for running network preprocessing and analysis 
 #From original location to server 
 rsync -avz -O --omit-dir-times --no-perms  --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/mprage.nii" --include="7*/Rest?.nii" --include="7*/Learn?_PEpriorD.feat/filtered_func_data.nii.gz" --include="7*/Learn?_PEpriorD.feat/reg" --include="7*/Learn?_PEpriorD.feat/mc" --include="7*/Learn?_PEpriorD.feat/mc/*" --include="7*/Learn?_PEpriorD.feat/reg/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" rgerraty@lovelace.psych.columbia.edu:/data/engine/juliet/adoles/ /danl/Harmon_dynCon/
 
+#Just taking Learn & Rest preprocessed data to run community detection on elvis
+rsync --dry-run -avz -O --omit-dir-times --no-perms  --include="4*" --include="4*/Learn?_PEprior.feat" --include="4*/Rest" --include="4*/Learn?_PEprior.feat/36par+spikes.feat" --include="4*/Rest/Rest?.feat" --include="41*/Rest/Rest?.feat/36par+spikes.feat" --include="4*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois" --include="4*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois" --include="4*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois/conn_cells.mat" --include="4*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois"   --include="4*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/conn_cells.mat" --exclude="*" --exclude="*/*" --exclude="*/*/*" charmon@lovelace.psych.columbia.edu:/data/engine/rgerraty/learn_dyncon/ /danl/Harmon_dynCon/
+%Remove --dry_run when ready to run 
+
+
 #From server to Habanero 
 rsync -avz -O --omit-dir-times --no-perms  --include="7*" --include="7*/Learn?_PEpriorD.feat" --include="7*/Learn?_PEpriorD.feat/*" --include="7*/Learn?_PEpriorD.feat/reg" --include="7*/Learn?_PEpriorD.feat/mc" --include="7*/Learn?_PEpriorD.feat/mc/*" --include="7*/Learn?_PEpriorD.feat/reg/*" --exclude="*" --exclude="*/*" --exclude="*/*/*" charmon@lux.psych.columbia.edu:/danl/Harmon_dynCon/ /rigel/psych/users/cmh2228/dynCon/
 ```
@@ -312,9 +317,12 @@ for j=1:size(c,1)/numruns
     %gives flexibility for each run
     %also allegiance matrix (not using yet)
     %need to specify number of blocks, simulations, coupling, resolution
-    [a_mat,flex]=network_diags(conn_cell_cat,4,500,1,1.1813)
-    save(char(strcat(c(k),'/../../../a_mat')),'a_mat')
-    save(char(strcat(c(k),'/../../../flex')),'flex')
+    [a_mat,flex]=network_diags(conn_cell_cat,4,500,1,1.1813) %This will be ammended *see below* for saving comm detect
+    save(char(strcat(c(k),'/../../../a_mat')),'a_mat') 
+    save(char(strcat(c(k),'/../../../flex')),'flex') 
+    %save(char(strcat(c(k),'/../../../prom')),'prom')  %See below - the next 3 lines are added seperately in re-run comm detect
+    %save(char(strcat(c(k),'/../../../S_tmp')),'S_tmp')
+    %save(char(strcat(c(k),'/../../../Q_tmp')),'Q_tmp')
     k=k+numruns;
 end
 ```
@@ -358,6 +366,10 @@ for j=1:size(c,1)/numruns
     [a_mat,flex]=network_diags(conn_cell_cat,4,500,1,1.1813)
     save(char(strcat(c(k),'/../../../a_mat')),'a_mat')
     save(char(strcat(c(k),'/../../../flex')),'flex')
+    %save(char(strcat(c(k),'/../../../prom')),'prom') %could be added if you adapt output above to [a_mat, flex, prom, S_tmp, Qtmp]
+    %save(char(strcat(c(k),'/../../../S')),'S')
+    %save(char(strcat(c(k),'/../../../S_tmp')),'S_tmp')
+    %save(char(strcat(c(k),'/../../../Q_tmp')),'Q_tmp')
     k=k+numruns;
 end
 
@@ -407,6 +419,165 @@ for k=1:size(a_mat,3)
 end
 
 ```
+
+
+### Re-Run multi-slice community detection and flexibility statistics to save Community Detection Numbers 
+
+Input coherence matrix for each block. Also need number of blocks,
+resolution and coupling parameters. In Matlab
+
+```.matlab
+%forTask
+%need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
+addpath ~/GitHub/rl_flexibility
+addpath ~/GitHub/rl_flexibility/GenLouvain/
+addpath ~/GitHub/rl_flexibility/Bassett_Code/
+
+%read in data - to make faster break up into different screens
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/71*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/72*/Learn?_PEpriorD.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/41*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/42*/Learn?_PEprior.feat/36par+spikes.feat/H-O_rois/');
+
+
+%do the above first then do the below 
+
+c=sort(strread(b,'%s'));
+
+maxComm = zeros(1,size(S_tmp,3))';
+%concatenate runs for each subject
+numruns=4
+k=1;
+for j=1:size(c,1)/numruns
+    c(k)
+    conn_cell_cat=[];
+    for i=1:numruns 
+        load(strcat(char(c(k-1+i)),'/conn_cells'))
+        conn_cell_cat=cat(3,conn_cell_cat,conn_cell)
+    end
+
+    %network_diags code:
+    %runs multi-slice community detection
+    %gives flexibility for each run
+    %also allegiance matrix (not using yet)
+    %need to specify number of blocks, simulations, coupling, resolution
+    [a_mat,flex,prom,S_tmp,Q_tmp]=network_diags(conn_cell_cat,4,500,1,1.1813)
+    save(char(strcat(c(k),'/../../../a_mat_rerun1')),'a_mat') %Remove _rerun1 when doing for the first time
+    save(char(strcat(c(k),'/../../../flex_rerun1')),'flex') %Remove _rerun1 when doing for the first time
+    save(char(strcat(c(k),'/../../../prom')),'prom')
+    save(char(strcat(c(k),'/../../../S_tmp')),'S_tmp')
+    save(char(strcat(c(k),'/../../../Q_tmp')),'Q_tmp')
+    for i=1:size(S_tmp,3)
+        maxComm(i)=max(unique(S_tmp(:,:,i)));
+    end
+    save(char(strcat(c(k),'/../../../maxComm')),'maxComm')
+    k=k+numruns;
+end
+
+%To get spreadsheet of max Communities 
+%Adolescents
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/');
+
+c=sort(strread(b,'%s'));
+commNum=zeros(size(c))  
+for i=1:size(c)
+    load(strcat(char(c(i)),'/maxComm'))
+    commNum(i)=max(maxComm);
+    save(char(strcat(c(1),'../AdolesCommNum.txt')),'commNum', '-ascii')
+end
+
+%Adults 
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/');
+
+c=sort(strread(b,'%s'));
+commNum=zeros(size(c))  
+for i=1:size(c)
+    load(strcat(char(c(i)),'/maxComm'))
+    commNum(i)=max(maxComm);
+    save(char(strcat(c(1),'../AdultsCommNumRest.txt')),'commNum', '-ascii')
+end
+
+
+
+
+%forTask
+%need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
+addpath ~/GitHub/rl_flexibility
+addpath ~/GitHub/rl_flexibility/GenLouvain/
+addpath ~/GitHub/rl_flexibility/Bassett_Code/
+
+%read in data
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/71*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/72*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/41*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+[a,b]=system('ls -d /danl/Harmon_dynCon/42*/Rest/Rest?.feat/36par+spikes.feat/H-O_rois/');
+
+%do the above first then do the below 
+
+c=strread(b,'%s');
+
+maxComm = zeros(1,size(S_tmp,3))';
+%concatenate runs for each subject
+numruns=2
+k=1;
+for j=1:size(c,1)/numruns
+    c(k)
+    conn_cell_cat=[];
+    for i=1:numruns 
+        load(strcat(char(c(k-1+i)),'/conn_cells'))
+        conn_cell_cat=cat(3,conn_cell_cat,conn_cell)
+    end
+
+    %network_diags code:
+    %runs multi-slice community detection
+    %gives flexibility for each run
+    %also allegiance matrix (not using yet)
+    %need to specify number of blocks, simulations, coupling, resolution
+    [a_mat,flex, prom, S_tmp, Q_tmp]=network_diags(conn_cell_cat,4,500,1,1.1813)
+    save(char(strcat(c(k),'/../../../a_mat_rerun1')),'a_mat')
+    save(char(strcat(c(k),'/../../../flex_rerun1')),'flex')
+    save(char(strcat(c(k),'/../../../prom')),'prom')
+    save(char(strcat(c(k),'/../../../S_tmp')),'S_tmp')
+    save(char(strcat(c(k),'/../../../Q_tmp')),'Q_tmp')
+    for i=1:size(S_tmp,3)
+        maxComm(i)=max(unique(S_tmp(:,:,i)));
+    end
+    save(char(strcat(c(k),'/../../../maxComm')),'maxComm')
+    k=k+numruns;
+end
+
+
+%To get spreadsheet of max Communities 
+%Adolescents
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/');
+
+c=sort(strread(b,'%s'));
+commNum=zeros(size(c))  
+for i=1:size(c)
+    load(strcat(char(c(i)),'/maxComm'))
+    commNum(i)=max(maxComm);
+    save(char(strcat(c(1),'../AdolesCommNum.txt')),'commNum', '-ascii')
+end
+
+%Adults
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/');
+
+c=sort(strread(b,'%s'));
+commNum=zeros(size(c))  
+for i=1:size(c)
+    load(strcat(char(c(i)),'/maxComm'))
+    commNum(i)=max(maxComm);
+    save(char(strcat(c(1),'../AdultsCommNum.txt')),'commNum', '-ascii')
+end
+
+
+```
+
+
 
 
 ### Pull flexibility statistics
