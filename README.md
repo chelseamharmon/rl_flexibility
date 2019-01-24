@@ -427,7 +427,7 @@ Input coherence matrix for each block. Also need number of blocks,
 resolution and coupling parameters. In Matlab
 
 ```.matlab
-%forTask
+%for
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
 addpath ~/GitHub/rl_flexibility
 addpath ~/GitHub/rl_flexibility/GenLouvain/
@@ -502,7 +502,7 @@ end
 
 
 
-%forTask
+%forRest
 %need multi-slice, flexibility codes not yet on GitHub for network_diags to run 
 addpath ~/GitHub/rl_flexibility
 addpath ~/GitHub/rl_flexibility/GenLouvain/
