@@ -511,7 +511,7 @@ addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 %do the above first then do the below 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 
 sim=500; 
 maxComm = zeros(1,sim)';
@@ -540,7 +540,7 @@ for j=1:size(c,1)/numruns
     for i=1:size(S_tmp,3)
         maxComm(i)=max(unique(S_tmp(:,:,i)));
     end
-    save(char(strcat(c(k),'/../../../maxComm')),'maxComm')
+    save(char(strcat(c(k),'/../../maxComm')),'maxComm')
     k=k+numruns;
 end
 
