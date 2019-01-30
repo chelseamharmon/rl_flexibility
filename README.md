@@ -235,8 +235,6 @@ for i=1:size(c,1)
 end
 
 
-
-
 ```
 
 
@@ -345,42 +343,32 @@ addpath ~/GitHub/rl_flexibility/Bassett_Code/
 
 %do the above first then do the below 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 
 %concatenate runs for each subject
-numruns=2
+numruns=1
 k=1;
 for j=1:size(c,1)/numruns
     c(k)
-    conn_cell_cat=[];
+    conn_cell=[];
     for i=1:numruns 
         load(strcat(char(c(k-1+i)),'/conn_cells'))
-        conn_cell_cat=cat(3,conn_cell_cat,conn_cell)
+        conn_cell=cat(3,conn_cell,conn_cell)
     end
-
-    %network_diags code:
-    %runs multi-slice community detection
-    %gives flexibility for each run
-    %also allegiance matrix (not using yet)
-    %need to specify number of blocks, simulations, coupling, resolution
-    [a_mat,flex]=network_diags(conn_cell_cat,4,500,1,1.1813)
-    save(char(strcat(c(k),'/../../../a_mat')),'a_mat')
-    save(char(strcat(c(k),'/../../../flex')),'flex')
-    %save(char(strcat(c(k),'/../../../prom')),'prom') %could be added if you adapt output above to [a_mat, flex, prom, S_tmp, Qtmp]
-    %save(char(strcat(c(k),'/../../../S')),'S')
-    %save(char(strcat(c(k),'/../../../S_tmp')),'S_tmp')
-    %save(char(strcat(c(k),'/../../../Q_tmp')),'Q_tmp')
+    [a_mat,flex]=network_diags(conn_cell,1,500,1,1.1813)
+    save(char(strcat(c(k),'/../../a_mat')),'a_mat')
+    save(char(strcat(c(k),'/../../flex')),'flex')
     k=k+numruns;
 end
 
 ```
 
-To add back in the missing columns/rows for subject 713 before pulling all subj flexibility stats 
+To add back in the missing columns/rows for subject 713 before pulling all subj flexibility stats
 #Should be updated for a_mat.mat & flex.mat 
 ```
 %do this from a script in matlab in the Learn folder seperately to index properly - to add back NA columns before concatenating
 
-load('flex.mat')
+load('/danl/Harmon_dynCon/713/flex.mat')
 flexTEMP=flex
 missing=[13 61; 61 13]
 
@@ -392,7 +380,7 @@ missing=[13 61; 61 13]
         C = [flexTEMP(missing(i):end,:)];
         flexTEMP=[A; B; C];
     end
-save('flexTEMP', 'flexTEMP')
+save('flex', 'flexTEMP')
 
 load('a_mat.mat')
 a_matTEMP=a_mat;
@@ -417,6 +405,7 @@ for k=1:size(a_mat,3)
     end
     a_matTEST(:,:,k)=a_matTEMP;
 end
+
 
 ```
 
@@ -477,27 +466,30 @@ for j=1:size(c,1)/numruns
     k=k+numruns;
 end
 
+
 %To get spreadsheet of max Communities 
 %Adolescents
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/');
+cd /danl/Harmon_dynCon
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/');
 
 c=sort(strread(b,'%s'));
-commNum=zeros(size(c))  
+commNum=zeros(size(c));  
 for i=1:size(c)
     load(strcat(char(c(i)),'/maxComm'))
     commNum(i)=max(maxComm);
-    save(char(strcat(c(1),'../AdolesCommNum.txt')),'commNum', '-ascii')
+    csvwrite('AdolesCommNum.csv', commNum)
 end
 
 %Adults 
-[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/');
+cd /danl/Harmon_dynCon
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/');
 
 c=sort(strread(b,'%s'));
-commNum=zeros(size(c))  
+commNum=zeros(size(c));  
 for i=1:size(c)
     load(strcat(char(c(i)),'/maxComm'))
     commNum(i)=max(maxComm);
-    save(char(strcat(c(1),'../AdultsCommNumRest.txt')),'commNum', '-ascii')
+    csvwrite('AdultsCommNum.csv', commNum)
 end
 
 
@@ -524,7 +516,7 @@ c=strread(b,'%s');
 sim=500; 
 maxComm = zeros(1,sim)';
 %concatenate runs for each subject
-numruns=2
+numruns=1
 k=1;
 for j=1:size(c,1)/numruns
     c(k)
@@ -539,12 +531,12 @@ for j=1:size(c,1)/numruns
     %gives flexibility for each run
     %also allegiance matrix (not using yet)
     %need to specify number of blocks, simulations, coupling, resolution
-    [a_mat,flex, prom, S_tmp, Q_tmp]=network_diags(conn_cell_cat,2,500,1,1.1813)
-    save(char(strcat(c(k),'/../../../a_mat_rerun1')),'a_mat')
-    save(char(strcat(c(k),'/../../../flex_rerun1')),'flex')
-    save(char(strcat(c(k),'/../../../prom')),'prom')
-    save(char(strcat(c(k),'/../../../S_tmp')),'S_tmp')
-    save(char(strcat(c(k),'/../../../Q_tmp')),'Q_tmp')
+    [a_mat,flex, prom, S_tmp, Q_tmp]=network_diags(conn_cell_cat,1,500,1,1.1813)
+    save(char(strcat(c(k),'/../../a_mat_rerun1')),'a_mat')
+    save(char(strcat(c(k),'/../../flex_rerun1')),'flex')
+    save(char(strcat(c(k),'/../../prom')),'prom')
+    save(char(strcat(c(k),'/../../S_tmp')),'S_tmp')
+    save(char(strcat(c(k),'/../../Q_tmp')),'Q_tmp')
     for i=1:size(S_tmp,3)
         maxComm(i)=max(unique(S_tmp(:,:,i)));
     end
@@ -555,31 +547,79 @@ end
 
 %To get spreadsheet of max Communities 
 %Adolescents
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/');
+cd /danl/Harmon_dynCon
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/');
 
 c=sort(strread(b,'%s'));
 commNum=zeros(size(c))  
 for i=1:size(c)
     load(strcat(char(c(i)),'/maxComm'))
     commNum(i)=max(maxComm);
-    save(char(strcat(c(1),'../AdolesCommNum.txt')),'commNum', '-ascii')
+    csvwrite('AdolesCommNumRest.csv', commNum)
 end
 
 %Adults
-[a,b]=system('ls -d /danl/Harmon_dynCon/4*/');
+cd /danl/Harmon_dynCon
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/');
 
 c=sort(strread(b,'%s'));
 commNum=zeros(size(c))  
 for i=1:size(c)
     load(strcat(char(c(i)),'/maxComm'))
     commNum(i)=max(maxComm);
-    save(char(strcat(c(1),'../AdultsCommNum.txt')),'commNum', '-ascii')
+    csvwrite('AdultsCommNumRest.csv', commNum)
 end
 
 
 ```
 
+To add back in the missing columns/rows for subject 713 before pulling all subj promiscuity stats
+#Should be updated for a_mat.mat & flex.mat 
+```
+%For promiscuity
+load('/danl/Harmon_dynCon/713/prom.mat')
+promTEMP=prom
+missing=[13 61; 61 13]
 
+    for i=1:length(missing)
+        %FOR inserting rows
+        len=size(promTEMP,i);
+        A = [promTEMP(1:missing(i)-1,:)];
+        B = NaN(1,4);
+        C = [promTEMP(missing(i):end,:)];
+        promTEMP=[A; B; C];
+    end
+save('/danl/Harmon_dynCon/713/prom', 'promTEMP')
+prom=promTEMP
+save('/danl/Harmon_dynCon/713/prom', 'prom')
+
+
+load('/danl/Harmon_dynCon/713/a_mat_rerun1.mat')
+a_matTEMP=a_mat;
+a_matTEST=zeros(110,110,32);
+missing=[13 61; 61 13];
+for k=1:size(a_mat,3)
+    a_matTEMP=a_mat(:,:,k)
+    missing=[13 61; 61 13]
+    for i=1:length(missing)
+            %For inserting rows
+            len=size(a_matTEMP,i);
+            A = [a_matTEMP(1:missing(i)-1,:)]';
+            B = NaN(1,len)';
+            C = [a_matTEMP(missing(i):end,:)]';
+            a_matTEMP1=[A B C];
+            %For inserting columns
+            len=size(a_matTEMP1,2)
+            A = [a_matTEMP1(1:missing(i)-1,:)];
+            B = NaN(1,len);
+            C = [a_matTEMP1(missing(i):end,:)];
+            a_matTEMP=[A; B; C];
+    end
+    a_matTEST(:,:,k)=a_matTEMP;
+end
+save('a_mat_rerun1', 'a_matTEST')
+
+```
 
 
 ### Pull flexibility statistics
@@ -651,6 +691,79 @@ end
 
 dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
 ```
+
+### Pull promiscuity statistics
+
+For plotting and preparing for heirarchical models. Matlab.
+
+forTask
+```.matlab
+
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/prom.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+prom_cat=[];
+for j=1:size(c,1)
+    load(char(c(j)))
+    prom_cat=cat(3,prom_cat,prom)
+end
+plot(squeeze(mean(prom_cat)))
+
+block=repmat([1:4]',25,1);
+sub=repmat([1:25]',1,4)'
+sub=sub(:);
+
+%reshape whole-brain average flexibility
+meanprom=squeeze(mean(prom_cat));
+meanprom=meanprom(:);
+
+%get striatal average flexibility
+%check to make sure indices are correct
+[trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
+roi_names=strread(roi_names,'%s');
+str_ind=[49,51,54,104,106,109];
+roi_names(str_ind)
+
+
+strflex=squeeze(mean(flex_cat(str_ind,:,:)));
+strflex=strflex(:);
+
+plot(squeeze(mean(flex_cat(str_ind,:,:))))
+
+%Hippocampus 
+hipp_ind=[9, 69];
+roi_names(hipp_ind)
+%roi_names(hipp_ind)
+left_hipp=[9];
+right_hipp=[69];
+hippflex=squeeze(mean(flex_cat(hipp_ind,:,:)));
+hippflex=hippflex(:);
+hippflexR=squeeze(mean(flex_cat(right_hipp,:,:)));
+hippflexR=hippflexR(:);
+hippflexL=squeeze(mean(flex_cat(right_hipp,:,:)));
+hippflexL=hippflexL(:);
+plot(squeeze((flex_cat(right_hipp,:,:))))
+plot(squeeze((flex_cat(left_hipp,:,:))))
+
+plot(squeeze(mean(flex_cat(hipp_ind,:,:))))
+
+%write out csv for modeling in R
+flexdata=[sub block meanflex strflex]
+dlmwrite('/danl/Harmon_dynCon/flexdata.csv',flexdata) 
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+flex_allrois=[];
+for i=1:size(flex_cat,3)
+  flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
+end
+
+dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
+```
+
 
 forRest 
 ```.matlab
