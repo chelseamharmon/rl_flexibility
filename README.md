@@ -775,18 +775,18 @@ roi_names(hipp_ind)
 left_hipp=[9];
 right_hipp=[69];
 hipprom=squeeze(mean(prom_cat(hipp_ind,:,:)));
-hipprom=hippflex(:);
+hipprom=hipprom(:);
 hippromR=squeeze(mean(prom_cat(right_hipp,:,:)));
-hippromR=hippflexR(:);
+hippromR=hippromR(:);
 hippromL=squeeze(mean(prom_cat(right_hipp,:,:)));
-hippromL=hippflexL(:);
+hippromL=hippromL(:);
 plot(squeeze((prom_cat(right_hipp,:,:))))
 plot(squeeze((prom_cat(left_hipp,:,:))))
 
 
 plot(squeeze(mean(prom_cat(hipp_ind,:,:))))
-saveas(gcf,'meanProm25.png') 
-saveas(gcf,'meanProm25.fig') 
+saveas(gcf,'hippProm25.png') 
+saveas(gcf,'hippProm25.fig') 
 
 %write out csv for modeling in R
 promdata=[sub block meanprom strprom]
@@ -905,11 +905,11 @@ roi_names(hipp_ind)
 left_hipp=[52];
 right_hipp=[107];
 hipprom=squeeze(mean(prom_cat(hipp_ind,:,:)));
-hipprom=hippflex(:);
+hipprom=hipprom(:);
 hippromR=squeeze(mean(prom_cat(right_hipp,:,:)));
-hippromR=hippflexR(:);
+hippromR=hippromR(:);
 hippromL=squeeze(mean(prom_cat(right_hipp,:,:)));
-hippromL=hippflexL(:);
+hippromL=hippromL(:);
 plot(squeeze((prom_cat(right_hipp,:,:))))
 plot(squeeze((prom_cat(left_hipp,:,:))))
 
