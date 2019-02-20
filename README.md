@@ -470,25 +470,25 @@ end
 %To get spreadsheet of max Communities 
 %Adolescents
 cd /danl/Harmon_dynCon
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/');
-
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*');
 c=sort(strread(b,'%s'));
-commNum=zeros(size(c));  
+commNum=zeros(size(c,1), 32);  
 for i=1:size(c)
-    load(strcat(char(c(i)),'/maxComm'))
-    commNum(i)=mean(maxComm);
+    load(strcat(char(c(i)),'/S_tmp.mat'))
+    commNum(i,:)=mean(max(S_tmp),3)
     csvwrite('AdolesCommNum.csv', commNum)
 end
+
 
 %Adults 
 cd /danl/Harmon_dynCon
 [a,b]=system('ls -d /danl/Harmon_dynCon/4*/');
 
 c=sort(strread(b,'%s'));
-commNum=zeros(size(c));  
+commNum=zeros(size(c,1), 32);  
 for i=1:size(c)
-    load(strcat(char(c(i)),'/maxComm'))
-    commNum(i)=mean(maxComm);
+    load(strcat(char(c(i)),'/S_tmp.mat'))
+    commNum(i,:)=mean(max(S_tmp),3)
     csvwrite('AdultsCommNum.csv', commNum)
 end
 
@@ -551,46 +551,45 @@ cd /danl/Harmon_dynCon
 [a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/');
 
 c=sort(strread(b,'%s'));
-commNum=zeros(size(c));  
+commNum=zeros(size(c,1), 6);  
 for i=1:size(c)
-    load(strcat(char(c(i)),'/maxComm'))
-    commNum(i)=mean(maxComm);
+    load(strcat(char(c(i)),'/S_tmp.mat'))
+    commNum(i,:)=mean(max(S_tmp),3)
     csvwrite('AdolesCommNumRest1.csv', commNum)
 end
 
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest2.feat/');
+
+c=sort(strread(b,'%s'));
+commNum=zeros(size(c,1), 6);  
+for i=1:size(c)
+    load(strcat(char(c(i)),'/S_tmp.mat'))
+    commNum(i,:)=mean(max(S_tmp),3)
+    csvwrite('AdolesCommNumRest2.csv', commNum)
+end
+
+%Adults
 cd /danl/Harmon_dynCon
 [a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest1.feat/');
 
 c=sort(strread(b,'%s'));
-commNum=zeros(size(c));  
+commNum=zeros(size(c,1), 6);  
 for i=1:size(c)
-    load(strcat(char(c(i)),'/maxComm'))
-    commNum(i)=mean(maxComm);
+    load(strcat(char(c(i)),'/S_tmp.mat'))
+    commNum(i,:)=mean(max(S_tmp),3)
     csvwrite('AdultsCommNumRest1.csv', commNum)
-end
-
-
-%Adults
-cd /danl/Harmon_dynCon
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest2.feat/');
-
-c=sort(strread(b,'%s'));
-commNum=zeros(size(c));  
-for i=1:size(c)
-    load(strcat(char(c(i)),'/maxComm'))
-    commNum(i)=mean(maxComm);
-    csvwrite('AdolesCommNumRest2.csv', commNum)
 end
 
 [a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest2.feat/');
 
 c=sort(strread(b,'%s'));
-commNum=zeros(size(c));  
+commNum=zeros(size(c,1), 6);  
 for i=1:size(c)
-    load(strcat(char(c(i)),'/maxComm'))
-    commNum(i)=mean(maxComm);
+    load(strcat(char(c(i)),'/S_tmp.mat'))
+    commNum(i,:)=mean(max(S_tmp),3)
     csvwrite('AdultsCommNumRest2.csv', commNum)
 end
+
 ```
 
 ```.r
