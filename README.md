@@ -688,24 +688,26 @@ strflex=strflex(:);
 
 plot(squeeze(mean(flex_cat(str_ind,:,:))))
 
-%Hippocampus 
-hipp_ind=[9, 69];
-left_hipp=[9];
-right_hipp=[69];
-hippflex=squeeze(mean(flex_cat(hipp_ind,:,:)));
-hippflex=hippflex(:);
-hippflexR=squeeze(mean(flex_cat(right_hipp,:,:)));
-hippflexR=hippflexR(:);
-hippflexL=squeeze(mean(flex_cat(right_hipp,:,:)));
-hippflexL=hippflexL(:);
-plot(squeeze((flex_cat(right_hipp,:,:))))
-plot(squeeze((flex_cat(left_hipp,:,:))))
+flex_allrois=[];
+for i=1:size(flex_cat,3)
+  flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
+end
 
-plot(squeeze(mean(flex_cat(hipp_ind,:,:))))
+dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
+```
 
-%write out csv for modeling in R
-flexdata=[sub block meanflex strflex]
-dlmwrite('/danl/Harmon_dynCon/flexdata.csv',flexdata) 
+
+
+forRest 
+
+```.matlab
+%Adolescents
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/flex.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -714,7 +716,60 @@ for i=1:size(flex_cat,3)
   flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
 end
 
-dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
+dlmwrite('/danl/Harmon_dynCon/flex_allroisRest1.03.04.2019.csv',flex_allrois) 
+
+%Rest 1 and Rest 2 are seperate 
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest2.feat/flex.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+flex_allrois=[];
+for i=1:size(flex_cat,3)
+  flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
+end
+
+dlmwrite('/danl/Harmon_dynCon/flex_allroisRest2.03.04.2019.csv',flex_allrois) 
+
+
+%Adults
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest1.feat/flex.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+flex_allrois=[];
+for i=1:size(flex_cat,3)
+  flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
+end
+
+dlmwrite('/danl/Harmon_dynCon/flex_allroisRest1Adults.03.04.2019.csv',flex_allrois) 
+
+%Rest 1 and Rest 2 are seperate 
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest2.feat/flex.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+flex_allrois=[];
+for i=1:size(flex_cat,3)
+  flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
+end
+
+dlmwrite('/danl/Harmon_dynCon/flex_allroisRest2Adults.03.04.2019.csv',flex_allrois) 
+
 ```
 
 ### Pull promiscuity statistics
@@ -803,54 +858,79 @@ dlmwrite('/danl/Harmon_dynCon/prom_allrois.csv',prom_allrois)
 
 
 forRest 
-WORK ON THISS - becuase only 1 block 
 ```.matlab
-
+%Adolescents
 %load data and concatenate flexibility statistics
 [a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/prom.mat');
 %do separately above and below 
 
 
 c=strread(b,'%s');
-prom_cat=[];
-for j=1:size(c,1)
-    load(char(c(j)))
-    prom_cat=cat(3,prom_cat,prom)
-end
-plot(squeeze(mean(prom_cat)))
-
-block=repmat([1:4]',25,1);
-sub=repmat([1:25]',1,4)'
-sub=sub(:);
-
-%reshape whole-brain average flexibility
-meanprom=squeeze(mean(prom_cat));
-meanprom=meanprom(:);
-
-%get striatal average flexibility
-%check to make sure indices are correct
-[trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
-roi_names=sort(strread(roi_names,'%s'));
-str_ind=[49,51,54,104,106,109];
-roi_names(str_ind)
-
-strprom=squeeze(mean(prom_cat(str_ind,:,:)));
-strprom=strprom(:);
-
-plot(squeeze(mean(prom_cat(str_ind,:,:))))
-
-%write out csv for modeling in R
-promdata=[sub block meanprom strprom]
-dlmwrite('/danl/Harmon_dynCon/promdataRest.csv',promdata) 
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
 prom_allrois=[];
+prom_cat=[];
 for i=1:size(prom_cat,3)
   prom_allrois=[prom_allrois;prom_cat(:,:,i)’];
 end
 
-dlmwrite('/danl/Harmon_dynCon/prom_allroisRest.csv',prom_allrois) 
+dlmwrite('/danl/Harmon_dynCon/prom_allroisRest1.03.04.2019.csv',prom_allrois) 
+
+%Rest2
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest2.feat/prom.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+prom_allrois=[];
+prom_cat=[];
+for i=1:size(prom_cat,3)
+  prom_allrois=[prom_allrois;prom_cat(:,:,i)’];
+end
+
+dlmwrite('/danl/Harmon_dynCon/prom_allroisRest2.03.04.2019.csv',prom_allrois) 
+
+%Adults
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest1.feat/prom.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+prom_allrois=[];
+prom_cat=[];
+for i=1:size(prom_cat,3)
+  prom_allrois=[prom_allrois;prom_cat(:,:,i)’];
+end
+
+dlmwrite('/danl/Harmon_dynCon/prom_allroisRest1Adults.03.04.2019.csv',prom_allrois) 
+
+%Rest2
+%load data and concatenate flexibility statistics
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest2.feat/prom.mat');
+%do separately above and below 
+
+
+c=strread(b,'%s');
+
+%get flexibility scores for each ROI for each run for whole-brain search
+%can prob do this more effeciently but this is easier to see, harder to botch
+prom_allrois=[];
+prom_cat=[];
+for i=1:size(prom_cat,3)
+  prom_allrois=[prom_allrois;prom_cat(:,:,i)’];
+end
+
+dlmwrite('/danl/Harmon_dynCon/prom_allroisRest2Adults.03.04.2019.csv',prom_allrois) 
+
 ```
 
 ## Adults 
@@ -928,57 +1008,6 @@ for i=1:size(prom_cat,3)
 end
 
 dlmwrite('/danl/Harmon_dynCon/prom_allrois_adults.csv',prom_allrois) 
-```
-
-FIX THISSS LIKE ABOVE - becuase only 1 block c
-forRest 
-```.matlab
-
-%load data and concatenate flexibility statistics
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/prom.mat');
-%do separately above and below 
-
-
-c=strread(b,'%s');
-prom_cat=[];
-for j=1:size(c,1)
-    load(char(c(j)))
-    flex_cat_rest=cat(3,prom_cat,prom)
-end
-plot(squeeze(mean(prom_cat)))
-
-block=repmat([1:4]',22,1);
-sub=repmat([1:22]',1,4)'
-sub=sub(:);
-
-%reshape whole-brain average flexibility
-meanflex=squeeze(mean(prom_cat));
-meanflex=meanflex(:);
-
-%get striatal average flexibility
-%check to make sure indices are correct
-[trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
-roi_names=strread(roi_names,'%s');
-str_ind=[49,51,54,104,106,109];
-roi_names(str_ind)
-
-strflex=squeeze(mean(prom_cat(str_ind,:,:)));
-strflex=strflex(:);
-
-plot(squeeze(mean(prom_cat(str_ind,:,:))))
-
-%write out csv for modeling in R
-promdata=[sub block meanflex strflex]
-dlmwrite('/danl/Harmon_dynCon/promdataRest_adults.csv',promdata) 
-
-%get flexibility scores for each ROI for each run for whole-brain search
-%can prob do this more effeciently but this is easier to see, harder to botch
-prom_allrois=[];
-for i=1:size(prom_cat,3)
-  prom_allrois=[prom_allrois;prom_cat(:,:,i)’];
-end
-
-dlmwrite('/danl/Harmon_dynCon/prom_allroisRest_adults.csv',flex_allrois) 
 ```
 
 
@@ -1320,9 +1349,15 @@ In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,  :
 Matlab
 
 ```.matlab
+%FOR ADULTS 
 str_ind=[49,51,54,104,106,109];
 [a,b]=system('ls -d /data/engine/rgerraty/learn_dyncon/4*/a_mat.mat');
-c=strread(b,'%s');
+
+%FOR ADOLESCENTS 
+str_ind=[6,8,11,66,68,71];
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/a_mat_rerun1.mat');
+
+c=sort(strread(b,'%s'));
 
 h=1
 for s=1:length(c)
@@ -1342,11 +1377,21 @@ end
 
 header={'allegiance','ROI','str_roi','block','sub'};
 header2=sprintf('%s,',header{:});header2(end)=[];
+
+%ADULTS
 dlmwrite('/data/engine/rgerraty/learn_dyncon/alleg_long.csv',...
   header2,'')
 
 dlmwrite('/data/engine/rgerraty/learn_dyncon/alleg_long.csv',...
   a_mat_long,'-append','delimiter',',')
+  
+%ADOLESCENTS
+dlmwrite('/danl/Harmon_dynCon/alleg_long.csv',...
+  header2,'')
+
+dlmwrite('/danl/Harmon_dynCon/alleg_long.csv',...
+  a_mat_long,'-append','delimiter',',')
+
 
 ```
 
