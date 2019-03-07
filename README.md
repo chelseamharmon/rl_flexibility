@@ -618,7 +618,7 @@ save('/danl/Harmon_dynCon/713/prom', 'promTEMP')
 prom=promTEMP
 save('/danl/Harmon_dynCon/713/prom', 'prom')
 
-
+%For allegiance 
 load('/danl/Harmon_dynCon/713/a_mat_rerun1.mat')
 a_matTEMP=a_mat;
 a_matTEST=zeros(110,110,32);
@@ -642,7 +642,26 @@ for k=1:size(a_mat,3)
     end
     a_matTEST(:,:,k)=a_matTEMP;
 end
-save('a_mat_rerun1', 'a_matTEST')
+save('/danl/Harmon_dynCon/713/a_mat_rerun1', 'a_matTEST')
+a_mat=a_matTEST
+save('/danl/Harmon_dynCon/713/a_mat_rerun1', 'a_mat')
+
+%For flexibility 
+load('/danl/Harmon_dynCon/713/flex_rerun1.mat') %Renamed to '/danl/Harmon_dynCon/713/flex_rerun1_108.mat'
+flexTEMP=flex
+missing=[13 61; 61 13]
+
+    for i=1:length(missing)
+        %FOR inserting rows
+        len=size(flexTEMP,i);
+        A = [flexTEMP(1:missing(i)-1,:)];
+        B = NaN(1,4);
+        C = [flexTEMP(missing(i):end,:)];
+        flexTEMP=[A; B; C];
+    end
+save('/danl/Harmon_dynCon/713/flex_rerun1', 'flexTEMP')
+flex=flexTEMP;
+save('/danl/Harmon_dynCon/713/flex_rerun1', 'flex')
 
 ```
 
@@ -653,13 +672,15 @@ For plotting and preparing for heirarchical models. Matlab.
 
 forTask
 ```.matlab
-
+%ADOLESCENTS 
 %load data and concatenate flexibility statistics
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/flex.mat');
+%[a,b]=system('ls -d /danl/Harmon_dynCon/7*/flex.mat');
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/flex_rerun1.mat');
+
 %do separately above and below 
 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 flex_cat=[];
 for j=1:size(c,1)
     load(char(c(j)))
@@ -679,7 +700,8 @@ meanflex=meanflex(:);
 %check to make sure indices are correct
 [trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
 roi_names=strread(roi_names,'%s');
-str_ind=[49,51,54,104,106,109];
+%str_ind=[49,51,54,104,106,109]; %FOR adults only 
+str_ind=[6,8,11,66,68,71];
 roi_names(str_ind)
 roi_names(hipp_ind)
 
@@ -693,7 +715,9 @@ for i=1:size(flex_cat,3)
   flex_allrois=[flex_allrois;flex_cat(:,:,i)'];
 end
 
-dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
+%dlmwrite('/danl/Harmon_dynCon/flex_allrois.csv',flex_allrois) 
+dlmwrite('/danl/Harmon_dynCon/flex_allrois03.04.2019.csv',flex_allrois) %This is flex_rerun1
+
 ```
 
 
@@ -703,11 +727,17 @@ forRest
 ```.matlab
 %Adolescents
 %load data and concatenate flexibility statistics
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/flex.mat');
+%[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/flex.mat');
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest1.feat/flex_rerun1.mat');
+
 %do separately above and below 
+c=sort(strread(b,'%s'));
+flex_cat=[];
+for j=1:size(c,1)
+    load(char(c(j)))
+    flex_cat=cat(3,flex_cat,flex);
+end
 
-
-c=strread(b,'%s');
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -720,11 +750,16 @@ dlmwrite('/danl/Harmon_dynCon/flex_allroisRest1.03.04.2019.csv',flex_allrois)
 
 %Rest 1 and Rest 2 are seperate 
 %load data and concatenate flexibility statistics
-[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest2.feat/flex.mat');
+%[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest2.feat/flex.mat');
+[a,b]=system('ls -d /danl/Harmon_dynCon/7*/Rest/Rest2.feat/flex_rerun1.mat');
+
 %do separately above and below 
-
-
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
+flex_cat=[];
+for j=1:size(c,1)
+    load(char(c(j)))
+    flex_cat=cat(3,flex_cat,flex);
+end
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -738,11 +773,16 @@ dlmwrite('/danl/Harmon_dynCon/flex_allroisRest2.03.04.2019.csv',flex_allrois)
 
 %Adults
 %load data and concatenate flexibility statistics
-[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest1.feat/flex.mat');
+%[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest1.feat/flex.mat');
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest1.feat/flex_rerun1.mat');
+
 %do separately above and below 
-
-
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
+flex_cat=[];
+for j=1:size(c,1)
+    load(char(c(j)))
+    flex_cat=cat(3,flex_cat,flex);
+end
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -755,11 +795,17 @@ dlmwrite('/danl/Harmon_dynCon/flex_allroisRest1Adults.03.04.2019.csv',flex_allro
 
 %Rest 1 and Rest 2 are seperate 
 %load data and concatenate flexibility statistics
-[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest2.feat/flex.mat');
+%[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest2.feat/flex.mat');
+[a,b]=system('ls -d /danl/Harmon_dynCon/4*/Rest/Rest2.feat/flex_rerun1.mat');
+
 %do separately above and below 
+c=sort(strread(b,'%s'));
+flex_cat=[];
+for j=1:size(c,1)
+    load(char(c(j)))
+    flex_cat=cat(3,flex_cat,flex);
+end
 
-
-c=strread(b,'%s');
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -784,7 +830,7 @@ forTask
 %do separately above and below 
 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 prom_cat=[];
 for j=1:size(c,1)
     load(char(c(j)))
@@ -807,8 +853,12 @@ meanprom=meanprom(:);
 %get striatal average flexibility
 %check to make sure indices are correct
 [trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
-roi_names=sort(strread(roi_names,'%s'));
-str_ind=[49,51,54,104,106,109];
+
+%Do this seperately 
+roi_names=strread(roi_names,'%s');
+%str_ind=[49,51,54,104,106,109]; %For adults only 
+str_ind=[6,8,11,66,68,71]; %For adoles only
+
 roi_names(str_ind)
 
 
@@ -821,8 +871,7 @@ saveas(gcf,'strProm25.fig')
 
 
 %Hippocampus 
-%hipp_ind=[9, 69]; When sorted use:
-hipp_ind=[52, 107];
+hipp_ind=[9, 69]; %For adoels; When sorted use: hipp_ind=[52, 107];
 
 roi_names(hipp_ind)
 %roi_names(hipp_ind)
@@ -865,7 +914,7 @@ forRest
 %do separately above and below 
 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -883,7 +932,7 @@ dlmwrite('/danl/Harmon_dynCon/prom_allroisRest1.03.04.2019.csv',prom_allrois)
 %do separately above and below 
 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -901,7 +950,7 @@ dlmwrite('/danl/Harmon_dynCon/prom_allroisRest2.03.04.2019.csv',prom_allrois)
 %do separately above and below 
 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -919,7 +968,7 @@ dlmwrite('/danl/Harmon_dynCon/prom_allroisRest1Adults.03.04.2019.csv',prom_allro
 %do separately above and below 
 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 
 %get flexibility scores for each ROI for each run for whole-brain search
 %can prob do this more effeciently but this is easier to see, harder to botch
@@ -942,7 +991,7 @@ forTask
 %do separately above and below 
 
 
-c=strread(b,'%s');
+c=sort(strread(b,'%s'));
 prom_cat=[];
 for j=1:size(c,1)
     load(char(c(j)))
@@ -963,7 +1012,7 @@ meanprom=meanprom(:);
 
 %get striatal average flexibility
 %check to make sure indices are correct
-[trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename');
+[trash,roi_names]=system('ls  /danl/Harmon_dynCon/Harvard-Oxford_ROIs/*nii.gz | xargs -n1 basename'); %SHOULD USE ORDER FROM CONN_CELLS different from them in this list 
 roi_names=sort(strread(roi_names,'%s'));
 str_ind=[49,51,54,104,106,109];
 roi_names(str_ind)
@@ -1386,10 +1435,10 @@ dlmwrite('/data/engine/rgerraty/learn_dyncon/alleg_long.csv',...
   a_mat_long,'-append','delimiter',',')
   
 %ADOLESCENTS
-dlmwrite('/danl/Harmon_dynCon/alleg_long.csv',...
+dlmwrite('/danl/Harmon_dynCon/alleg_long03.04.2019.csv',...
   header2,'')
 
-dlmwrite('/danl/Harmon_dynCon/alleg_long.csv',...
+dlmwrite('/danl/Harmon_dynCon/alleg_long03.04.2019.csv',...
   a_mat_long,'-append','delimiter',',')
 
 
